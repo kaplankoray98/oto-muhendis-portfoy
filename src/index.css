@@ -1,0 +1,52 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+
+@theme {
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-body: "Manrope", sans-serif;
+  
+  --color-brand-red: #d42b3b;
+  --color-brand-light-red: #ffb3b1;
+  --color-brand-dark: #131313;
+  --color-brand-surface: #1c1b1b;
+  --color-brand-outline: #5b403d;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-dark text-neutral-200 font-body;
+  }
+}
+
+.carbon-pattern {
+  background-color: #131313;
+  background-image: linear-gradient(45deg, #0e0e0e 25%, transparent 25%), 
+                    linear-gradient(-45deg, #0e0e0e 25%, transparent 25%), 
+                    linear-gradient(45deg, transparent 75%, #0e0e0e 75%), 
+                    linear-gradient(-45deg, transparent 75%, #0e0e0e 75%);
+  background-size: 4px 4px;
+}
+
+.mechanical-grid {
+  background-image: radial-gradient(#2a2a2a 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.headlight-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.headlight-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(212, 43, 59, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+  pointer-events: none;
+}
+
+.headlight-glow:hover::after {
+  opacity: 1;
+}

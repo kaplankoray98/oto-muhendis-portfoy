@@ -1,0 +1,933 @@
+﻿import React, { useState, useEffect, createContext, useContext } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  Settings, 
+  Menu, 
+  Star, 
+  Gauge, 
+  PenTool, 
+  Bolt, 
+  LayoutGrid,
+  ArrowRight,
+  Globe,
+  Share2,
+  ChevronRight,
+  Cog,
+  Newspaper,
+  RefreshCw,
+  Sun,
+  Moon
+} from 'lucide-react';
+import { GoogleGenAI } from "@google/genai";
+
+// Theme Context
+const ThemeContext = createContext<{ theme: 'dark' | 'light'; toggleTheme: () => void }>({
+  theme: 'dark',
+  toggleTheme: () => {},
+});
+
+// --- Components ---
+
+const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: string, setActiveTab: (id: string) => void, mobile?: boolean, onClose?: () => void }) => {
+  const { theme } = useContext(ThemeContext);
+  const isDark = theme === 'dark';
+  const menuItems = [
+    { id: 'Dashboard', label: 'Anasayfa', icon: LayoutGrid },
+    { id: 'Drafts', label: 'Projelerim', icon: PenTool },
+    { id: 'CarOfTheDay', label: 'GÃ¼nÃ¼n ArabasÄ±', icon: Star },
+    { id: 'News', label: 'Otomotiv Haberleri', icon: Newspaper },
+  ];
+
+  const sidebarClasses = mobile 
+    ? `flex flex-col pt-24 pb-8 h-full w-64 shadow-2xl transition-colors duration-500 ${isDark ? 'bg-neutral-950 border-r border-white/5' : 'bg-white border-r border-neutral-200'}`
+    : `hidden lg:flex flex-col pt-24 pb-8 h-full fixed left-0 top-0 w-64 z-40 transition-colors duration-500 ${isDark ? 'bg-neutral-950 border-r border-white/5' : 'bg-white border-r border-neutral-200'}`;
+
+  return (
+    <aside className={sidebarClasses}>
+      <div className="px-6 mb-10 flex justify-between items-center">
+        <div>
+          <div className={`text-lg font-bold font-headline ${isDark ? 'text-neutral-100' : 'text-neutral-900'}`}>KDK AUTO 1864</div>
+          <div className="font-headline uppercase text-[10px] tracking-[0.2em] text-brand-red">V8-Ã‡Ä°FT-TURBO</div>
+        </div>
+        {mobile && (
+          <button onClick={onClose} className={`${isDark ? 'text-neutral-500 hover:text-white' : 'text-neutral-400 hover:text-neutral-900'} lg:hidden`}>
+            <ChevronRight className="rotate-180" size={20} />
+          </button>
+        )}
+      </div>
+      
+      <nav className="flex flex-col gap-1 relative">
+        {menuItems.map((item) => {
+          const isActive = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                if (onClose) onClose();
+              }}
+              className={`relative px-6 py-4 flex items-center gap-4 transition-colors duration-300 group overflow-hidden ${
+                isActive ? (isDark ? 'text-white' : 'text-neutral-900') : (isDark ? 'text-neutral-500 hover:text-neutral-300' : 'text-neutral-400 hover:text-neutral-700')
+              }`}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId={mobile ? "sidebar-active-mobile" : "sidebar-active"}
+                  className="absolute inset-0 bg-brand-red/20 border-r-4 border-brand-red"
+                  initial={{ x: '-100%' }}
+                  animate={{ x: 0 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                />
+              )}
+
+              <div className="relative z-10 flex items-center gap-4 w-full">
+                <div className="flex items-center">
+                  <item.icon size={18} className={isActive ? 'text-brand-red' : 'text-neutral-500'} />
+                </div>
+                <span className="font-headline uppercase text-[11px] tracking-widest font-bold">
+                  {item.label}
+                </span>
+                
+                {isActive && (
+                  <motion.div 
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="ml-auto flex items-center"
+                  >
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                      className="mr-2"
+                    >
+                      <Cog size={12} className="text-brand-red/50" />
+                    </motion.div>
+                    <ChevronRight size={14} className="text-brand-red" />
+                  </motion.div>
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </nav>
+    </aside>
+  );
+};
+
+const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: { 
+  onSettingsClick: () => void, 
+  onMenuClick: () => void,
+  activeTab: string,
+  setActiveTab: (id: string) => void
+}) => {
+  const { theme } = useContext(ThemeContext);
+  const isDark = theme === 'dark';
+  return (
+  <header className={`backdrop-blur-md fixed top-0 left-0 right-0 h-20 z-50 flex justify-between items-center px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950/80 border-b border-white/5' : 'bg-white/80 border-b border-neutral-200'}`}>
+    <div className="flex-1 lg:hidden" /> {/* Spacer for mobile menu alignment if needed */}
+    
+    <nav className="flex flex-1 justify-center items-center">
+      <div className="relative group cursor-pointer" onClick={() => setActiveTab('Dashboard')}>
+        {/* Arka plan kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k yansÄ±masÄ± */}
+        <div className="absolute inset-0 bg-brand-red/40 blur-2xl rounded-full scale-150 opacity-50 group-hover:opacity-80 transition-opacity" />
+        
+        <span className={`relative z-10 font-headline text-4xl md:text-5xl font-black tracking-[0.4em] uppercase italic drop-shadow-[0_0_15px_rgba(212,43,59,0.8)] ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+          KDK AUTO
+        </span>
+      </div>
+    </nav>
+
+    <div className="flex items-center gap-4">
+      <button 
+        onClick={onSettingsClick}
+        className={`p-2 hover:text-brand-red transition-colors active:scale-90 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}
+      >
+        <Settings size={20} />
+      </button>
+      <button 
+        onClick={onMenuClick}
+        className={`p-2 hover:text-brand-red transition-colors lg:hidden active:scale-90 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}
+      >
+        <Menu size={20} />
+      </button>
+    </div>
+  </header>
+);};
+
+const ProjectCard = ({ title, subtitle, tag, image, size = 'small' }: { title: string; subtitle: string; tag: string; image: string; size?: 'small' | 'large' }) => (
+  <motion.div 
+    whileHover={{ scale: 1.01 }}
+    className={`relative group overflow-hidden bg-brand-surface rounded-none border-l-2 border-brand-red headlight-glow ${
+      size === 'large' ? 'md:col-span-8 h-[450px]' : 'md:col-span-4 h-[450px]'
+    }`}
+  >
+    <div className="carbon-pattern absolute inset-0 opacity-20 pointer-events-none" />
+    <img 
+      src={image} 
+      alt={title}
+      referrerPolicy="no-referrer"
+      className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700 grayscale group-hover:grayscale-0"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
+    
+    <div className="relative h-full p-8 flex flex-col justify-between z-10">
+      <div>
+        <div className="flex justify-between items-start mb-6">
+          <span className="bg-brand-red/20 text-brand-light-red font-headline text-[10px] px-3 py-1 rounded-full uppercase tracking-widest">
+            {tag}
+          </span>
+          <Bolt size={20} className="text-brand-red" />
+        </div>
+        <h3 className="font-headline text-3xl font-black uppercase tracking-tight mb-2">{title}</h3>
+        <p className="text-neutral-400 font-body text-sm max-w-xs">{subtitle}</p>
+      </div>
+      
+      <div className="flex items-center justify-between">
+        <div className="flex gap-6">
+          <div>
+            <div className="font-headline text-xl font-bold text-brand-red">78kg</div>
+            <div className="font-headline text-[9px] uppercase text-neutral-500 tracking-widest">Net Weight</div>
+          </div>
+          <div className="w-px h-8 bg-white/10" />
+          <div>
+            <div className="font-headline text-xl font-bold text-brand-red">45k</div>
+            <div className="font-headline text-[9px] uppercase text-neutral-500 tracking-widest">NM/DEG</div>
+          </div>
+        </div>
+        <button className="flex items-center gap-2 text-brand-red font-headline text-xs font-bold uppercase tracking-widest hover:translate-x-2 transition-transform">
+          Detaylar <ArrowRight size={14} />
+        </button>
+      </div>
+    </div>
+  </motion.div>
+);
+
+// --- Curated Car List with Real Photos ---
+const ICONIC_CARS = [
+  {
+    name: "911 Turbo", brand: "Porsche", year: "1975 - 2024",
+    engine: "3.7L Flat-6 Twin-Turbo", power: "650 HP", torque: "800 NM",
+    zeroToHundred: "2.7 saniye", marketValue: "$230,000",
+    story: "Porsche 911 Turbo, 1975'teki ilk Ã§Ä±kÄ±ÅŸÄ±ndan bu yana gÃ¼nlÃ¼k kullanÄ±labilirlik ile sÃ¼per spor performansÄ±nÄ± birleÅŸtiren bir ikon haline geldi.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/Porsche_930_Turbo_Targa_(Dark_Blue).jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/2021_Porsche_911_Turbo_S_CoupÃ©_(992)_in_Carrara_White,_front_8.21.21.jpg"
+  },
+  {
+    name: "Mustang", brand: "Ford", year: "1964 - 2024",
+    engine: "5.0L V8 Coyote", power: "486 HP", torque: "569 NM",
+    zeroToHundred: "3.8 saniye", marketValue: "$42,000",
+    story: "Ford Mustang, 1964'te pony car segmentini yaratan efsanevi Amerikan kas arabasÄ±.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/Ford_Mustang_front.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/2024_Ford_Mustang_GT_Premium_in_Vapor_Blue,_Front_Left,_11-25-2023.jpg"
+  },
+  {
+    name: "Supra", brand: "Toyota", year: "1978 - 2024",
+    engine: "3.0L Turbo I6", power: "382 HP", torque: "500 NM",
+    zeroToHundred: "3.9 saniye", marketValue: "$56,000",
+    story: "Toyota Supra, MK4 nesliyle tuning kÃ¼ltÃ¼rÃ¼nÃ¼n efsanesi haline geldi. 2JZ-GTE motoru sayesinde 1000+ beygir modifikasyonlarÄ± mÃ¼mkÃ¼n oldu.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/Toyota_Supra_in_the_Toyota_History_Garage.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Toyota_GR_Supra_at_Daikoku_PA.jpg"
+  },
+  {
+    name: "GT-R", brand: "Nissan", year: "1969 - 2024",
+    engine: "3.8L V6 Twin-Turbo", power: "565 HP", torque: "637 NM",
+    zeroToHundred: "2.7 saniye", marketValue: "$120,000",
+    story: "Nissan GT-R, 'Godzilla' lakabÄ±yla tanÄ±nan Japon sÃ¼per spor otomobili. 'SÃ¼per araba katili' unvanÄ±nÄ± kazandÄ±.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/Nissan_Skyline_C10_001.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Nissan_GT-R_MY2017_(1).jpg"
+  },
+  {
+    name: "Corvette", brand: "Chevrolet", year: "1953 - 2024",
+    engine: "6.2L V8 LT6", power: "670 HP", torque: "623 NM",
+    zeroToHundred: "2.6 saniye", marketValue: "$115,000",
+    story: "Chevrolet Corvette, Amerika'nÄ±n ilk gerÃ§ek spor arabasÄ± olarak 1953'te doÄŸdu. C8 nesliyle ilk kez orta motora geÃ§ti.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/1953_Chevrolet_Corvette.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Chevrolet_Corvette_C8_Stingray_CoupÃ©_1X7A0129.jpg"
+  },
+  {
+    name: "M3", brand: "BMW", year: "1986 - 2024",
+    engine: "3.0L I6 Twin-Turbo", power: "510 HP", torque: "650 NM",
+    zeroToHundred: "3.4 saniye", marketValue: "$78,000",
+    story: "BMW M3, 1986'da E30 platformuyla tanÄ±tÄ±ldÄ±. DTM yarÄ±ÅŸ homologasyonu iÃ§in doÄŸan M3, mÃ¼hendislik mÃ¼kemmelliÄŸinin simgesi oldu.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/BMW_M3_E30_front_20090514.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/BMW_M3_Competition_(G80)_1X7A5765.jpg"
+  },
+  {
+    name: "Countach", brand: "Lamborghini", year: "1974 - 2022",
+    engine: "6.5L V12 Hybrid", power: "814 HP", torque: "720 NM",
+    zeroToHundred: "2.8 saniye", marketValue: "$2,640,000",
+    story: "Lamborghini Countach, 1974'te sÃ¼per araba kavramÄ±nÄ± yeniden tanÄ±mladÄ±. 80'lerin poster arabasÄ±, 2022'de modern yorumuyla geri dÃ¶ndÃ¼.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/Lamborghini_Countach_LP400.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Lamborghini_Countach_LPI_800-4_(1).jpg"
+  },
+  {
+    name: "F40", brand: "Ferrari", year: "1987 - 1992",
+    engine: "2.9L V8 Twin-Turbo", power: "478 HP", torque: "577 NM",
+    zeroToHundred: "3.8 saniye", marketValue: "$2,500,000",
+    story: "Ferrari F40, Enzo Ferrari'nin kiÅŸisel olarak onayladÄ±ÄŸÄ± son model. 1987'de dÃ¼nyanÄ±n en hÄ±zlÄ± yol arabasÄ± unvanÄ±nÄ± kazandÄ±.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/F40_Ferrari_20090509.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Ferrari_SF90_Stradale_at_Auto_ZÃ¼rich_2023_1X7A1174.jpg"
+  },
+  {
+    name: "Defender", brand: "Land Rover", year: "1948 - 2024",
+    engine: "5.0L V8 Supercharged", power: "525 HP", torque: "625 NM",
+    zeroToHundred: "5.0 saniye", marketValue: "$110,000",
+    story: "Land Rover Defender, 1948'den bu yana dÃ¼nyanÄ±n en zorlu arazilerinde kendini kanÄ±tlamÄ±ÅŸ bir arazi efsanesi.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/1990_Land_Rover_Defender_110_V8.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Land_Rover_Defender_110_D240_AWD_First_Edition_(L663)_â€“_f_22082021.jpg"
+  },
+  {
+    name: "AMG GT", brand: "Mercedes-Benz", year: "1954 - 2024",
+    engine: "4.0L V8 Biturbo", power: "585 HP", torque: "800 NM",
+    zeroToHundred: "3.2 saniye", marketValue: "$165,000",
+    story: "Mercedes-Benz AMG GT, efsanevi 300SL Gullwing'in ruhani devamÄ±dÄ±r.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/Mercedes-Benz_300SL_Coupe_(7446260326).jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Mercedes-AMG_GT_63_S_4Matic+_4-Door_CoupÃ©,_Paris_Motor_Show_2018,_IMG_0288.jpg"
+  },
+  {
+    name: "Testarossa", brand: "Ferrari", year: "1984 - 1996",
+    engine: "4.9L Flat-12", power: "385 HP", torque: "490 NM",
+    zeroToHundred: "5.2 saniye", marketValue: "$350,000",
+    story: "Ferrari Testarossa, 80'lerin Miami Vice dizisiyle Ã¶zdeÅŸleÅŸen efsanevi Ä°talyan sÃ¼per arabasÄ±.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/Ferrari_Testarossa_-_Flickr_-_Alexandre_PrÃ©vot_(10)_(cropped).jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Ferrari_296_GTB_(cropped).jpg"
+  },
+  {
+    name: "Camaro", brand: "Chevrolet", year: "1966 - 2024",
+    engine: "6.2L V8 Supercharged", power: "659 HP", torque: "881 NM",
+    zeroToHundred: "3.5 saniye", marketValue: "$75,000",
+    story: "Chevrolet Camaro, 1966'da Ford Mustang'e rakip olarak doÄŸan ikonik Amerikan kas arabasÄ±.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/1969_Chevrolet_Camaro_SS.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Chevrolet_Camaro_ZL1_1LE_001.jpg"
+  },
+  {
+    name: "Charger", brand: "Dodge", year: "1966 - 2024",
+    engine: "6.2L V8 HEMI Supercharged", power: "807 HP", torque: "959 NM",
+    zeroToHundred: "3.4 saniye", marketValue: "$90,000",
+    story: "Dodge Charger, Amerikan kas arabasÄ± kÃ¼ltÃ¼rÃ¼nÃ¼n en ikonik temsilcilerinden biri.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/1969_Dodge_Charger_RT_(34566422602).jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/2020_Dodge_Charger_SRT_Hellcat_Widebody_Daytona_50th_Anniversary_Edition,_front_10.19.19.jpg"
+  },
+  {
+    name: "R8", brand: "Audi", year: "2006 - 2024",
+    engine: "5.2L V10", power: "620 HP", torque: "580 NM",
+    zeroToHundred: "3.1 saniye", marketValue: "$200,000",
+    story: "Audi R8, Le Mans yarÄ±ÅŸlarÄ±nda kazanÄ±lan teknolojiyi yola taÅŸÄ±yan bir sÃ¼per araba.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/Audi_R8_(Typ_42)_â€“_Frontansicht,_3._April_2012,_DÃ¼sseldorf.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Audi_R8_V10_performance_(FL,_Typ_4S)_â€“_f_30012023.jpg"
+  },
+  {
+    name: "Veyron / Chiron", brand: "Bugatti", year: "2005 - 2024",
+    engine: "8.0L W16 Quad-Turbo", power: "1600 HP", torque: "1600 NM",
+    zeroToHundred: "2.3 saniye", marketValue: "$3,500,000",
+    story: "Bugatti Veyron, 2005'te 407 km/s hÄ±z rekoruyla otomobil dÃ¼nyasÄ±nÄ± sarstÄ±. Chiron ile 490 km/s'ye ulaÅŸtÄ±.",
+    oldImage: "https://en.wikipedia.org/wiki/Special:FilePath/Bugatti_Veyron_16.4_â€“_Frontansicht_(1),_5._April_2012,_DÃ¼sseldorf.jpg",
+    newImage: "https://en.wikipedia.org/wiki/Special:FilePath/Bugatti_Chiron_(36560927).jpg"
+  },
+];
+
+
+// Date-based deterministic car selection
+function getTodayDateString(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
+function hashDateToIndex(dateStr: string, listLength: number): number {
+  let hash = 0;
+  for (let i = 0; i < dateStr.length; i++) {
+    const char = dateStr.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash) % listLength;
+}
+
+function getMillisecondsUntilMidnight(): number {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  return midnight.getTime() - now.getTime();
+}
+
+const STORAGE_KEY = 'kdk_car_of_the_day';
+
+function getCarOfTheDay() {
+  const todayStr = getTodayDateString();
+  
+  // Check localStorage cache
+  try {
+    const cached = localStorage.getItem(STORAGE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed.date === todayStr && parsed.car) {
+        return parsed.car;
+      }
+    }
+  } catch {}
+  
+  // Select car based on date hash
+  const index = hashDateToIndex(todayStr, ICONIC_CARS.length);
+  const car = ICONIC_CARS[index];
+  
+  // Cache in localStorage
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayStr, car }));
+  } catch {}
+  
+  return car;
+}
+
+const CarOfTheDaySection = () => {
+  const [car, setCar] = useState(getCarOfTheDay());
+  const [dateStr, setDateStr] = useState(getTodayDateString());
+
+  // Auto-refresh at midnight
+  useEffect(() => {
+    const scheduleRefresh = () => {
+      const msUntilMidnight = getMillisecondsUntilMidnight();
+      const timer = setTimeout(() => {
+        const newDateStr = getTodayDateString();
+        setDateStr(newDateStr);
+        setCar(getCarOfTheDay());
+        // Schedule next midnight refresh
+        scheduleRefresh();
+      }, msUntilMidnight + 1000); // +1 second buffer
+      return timer;
+    };
+    
+    const timer = scheduleRefresh();
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Re-select car when date changes (fallback)
+  useEffect(() => {
+    setCar(getCarOfTheDay());
+  }, [dateStr]);
+
+  return (
+    <section className="py-24 px-8 md:px-16 carbon-pattern min-h-screen">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-end mb-12">
+          <div>
+            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">GÃ¼nlÃ¼k_SeÃ§im</h2>
+            <h3 className="font-headline text-5xl font-black uppercase italic tracking-tighter">GÃ¼nÃ¼n_ArabasÄ±</h3>
+          </div>
+          <div className="text-right">
+            <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold">Tarih</div>
+            <div className="font-headline text-sm font-bold text-brand-red">{dateStr}</div>
+          </div>
+        </div>
+        
+        <motion.div 
+          key={dateStr}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-neutral-900/50 border border-white/10 overflow-hidden headlight-glow"
+        >
+          {/* Image Comparison - First Model vs Latest Model */}
+          <div className="grid grid-cols-1 md:grid-cols-2 border-b border-white/10">
+            <div className="relative group overflow-hidden h-[400px]">
+              <img src={car.oldImage} alt="Classic" referrerPolicy="no-referrer" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+              <div className="absolute top-4 left-4 bg-black/80 px-4 py-1 text-[10px] font-headline font-bold tracking-widest text-white border border-white/10">
+                Ä°LK_MODEL
+              </div>
+            </div>
+            <div className="relative group overflow-hidden h-[400px] border-l border-white/10">
+              <img src={car.newImage} alt="Modern" referrerPolicy="no-referrer" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+              <div className="absolute top-4 right-4 bg-brand-red px-4 py-1 text-[10px] font-headline font-bold tracking-widest text-white">
+                SON_MODEL
+              </div>
+            </div>
+          </div>
+
+          <div className="p-12">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
+              <div>
+                <h4 className="font-headline text-5xl font-black uppercase tracking-tighter mb-2">{car.brand} {car.name}</h4>
+                <p className="font-headline text-brand-red font-bold tracking-widest uppercase text-sm">{car.year}</p>
+              </div>
+              <div className="bg-brand-red/10 border border-brand-red/30 px-8 py-4">
+                <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-1">Piyasa_DeÄŸeri</div>
+                <div className="font-headline text-2xl font-black text-white">{car.marketValue}</div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+              <div className="lg:col-span-2">
+                <h5 className="font-headline text-xs tracking-widest text-neutral-500 uppercase font-bold mb-6 flex items-center gap-2">
+                  <div className="w-8 h-px bg-brand-red" /> TarihÃ§e_Ve_GeliÅŸim
+                </h5>
+                <p className="text-neutral-300 font-body leading-relaxed text-lg italic">"{car.story}"</p>
+              </div>
+              
+              <div className="space-y-8">
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">Beygir</div>
+                    <div className="font-headline text-2xl font-black text-white">{car.power}</div>
+                  </div>
+                  <div>
+                    <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">Tork</div>
+                    <div className="font-headline text-2xl font-black text-white">{car.torque}</div>
+                  </div>
+                  <div>
+                    <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">0-100 KM/S</div>
+                    <div className="font-headline text-2xl font-black text-brand-red">{car.zeroToHundred}</div>
+                  </div>
+                  <div>
+                    <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">Motor</div>
+                    <div className="font-headline text-sm font-bold text-white uppercase">{car.engine}</div>
+                  </div>
+                </div>
+                
+                <div className="w-full py-5 bg-white/5 border border-white/10 text-center">
+                  <div className="font-headline text-[10px] font-bold uppercase tracking-widest text-neutral-500">
+                    Gece yarÄ±sÄ± yeni efsane gelecek
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+
+const DraftsSection = () => (
+  <section className="py-24 px-8 md:px-16 carbon-pattern min-h-screen flex items-center">
+    <div className="max-w-5xl mx-auto w-full text-center">
+      <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">TasarÄ±m_KasasÄ±</h2>
+      <h3 className="font-headline text-5xl font-black uppercase italic tracking-tighter mb-16">Projelerim</h3>
+      
+      <div className="flex flex-col items-center justify-center py-20">
+        <div className="relative mb-8">
+          <div className="w-24 h-24 border-2 border-brand-red/30 rounded-full flex items-center justify-center">
+            <PenTool size={36} className="text-brand-red" />
+          </div>
+          <div className="absolute inset-0 border-2 border-brand-red/10 rounded-full animate-ping" />
+        </div>
+        <h4 className="font-headline text-4xl font-black uppercase tracking-tight mb-4">Pek YakÄ±nda</h4>
+        <p className="font-headline text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-bold">
+          Projeler_HazÄ±rlanÄ±yor // YakÄ±nda_Burada
+        </p>
+      </div>
+    </div>
+  </section>
+);
+
+
+const NewsSection = () => {
+  const [news, setNews] = useState<{ title: string; excerpt: string; date: string; category: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchNews = async () => {
+    setLoading(true);
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: "BugÃ¼n iÃ§in 5 adet gÃ¼nlÃ¼k otomotiv haberi baÅŸlÄ±ÄŸÄ± ve kÄ±sa Ã¶zet (her biri 2 cÃ¼mle) oluÅŸtur. JSON formatÄ±nda dizi olarak dÃ¶ndÃ¼r: title, excerpt, date (bugÃ¼nÃ¼n tarihi), ve category (Ã¶rn. EV, YarÄ±ÅŸ, Teknoloji, EndÃ¼stri). Dil TÃ¼rkÃ§e olsun.",
+        config: {
+          responseMimeType: "application/json",
+        }
+      });
+      
+      const data = JSON.parse(response.text);
+      setNews(data);
+    } catch (error) {
+      console.error("Error fetching news:", error);
+      // Fallback data - 5 Turkish automotive news
+      const today = new Date().toISOString().split('T')[0];
+      setNews([
+        { title: "Togg T10F Sedan Modeli Ä°lk Kez GÃ¶rÃ¼ntÃ¼lendi", excerpt: "Togg'un ilk sedan modeli T10F, Avrupa testleri sÄ±rasÄ±nda ilk kez kamuflajsÄ±z gÃ¶rÃ¼ntÃ¼lendi. 400 km menzil ve hÄ±zlÄ± ÅŸarj desteÄŸi ile 2026 sonunda satÄ±ÅŸa sunulmasÄ± bekleniyor.", date: today, category: "Yerli Ãœretim" },
+        { title: "Formula 1: 2026 Motor KurallarÄ± DeÄŸiÅŸiyor", excerpt: "FIA, 2026 sezonundan itibaren geÃ§erli olacak yeni motor dÃ¼zenlemelerini aÃ§Ä±kladÄ±. Elektrik gÃ¼cÃ¼ artÄ±rÄ±lÄ±rken, MGU-H Ã¼nitesi kaldÄ±rÄ±lacak ve sÃ¼rdÃ¼rÃ¼lebilir yakÄ±t zorunlu hale gelecek.", date: today, category: "YarÄ±ÅŸ" },
+        { title: "KatÄ± Hal Pil Teknolojisinde BÃ¼yÃ¼k AtÄ±lÄ±m", excerpt: "Toyota, yeni nesil katÄ± hal pillerinin seri Ã¼retim planlarÄ±nÄ± duyurdu. Mevcut lityum-iyon pillere gÃ¶re %40 daha fazla enerji yoÄŸunluÄŸu sunan teknoloji, 2027 sonunda araÃ§lara entegre edilecek.", date: today, category: "EV Teknoloji" },
+        { title: "BMW M4 CS TÃ¼rkiye FiyatÄ± AÃ§Ä±klandÄ±", excerpt: "BMW'nin yeni performans modeli M4 CS'in TÃ¼rkiye satÄ±ÅŸ fiyatÄ± belli oldu. 550 beygir gÃ¼cÃ¼ndeki araÃ§, sÄ±nÄ±rlÄ± sayÄ±da Ã¼retilecek ve TÃ¼rkiye'ye sadece 25 adet tahsis edildi.", date: today, category: "Pazar" },
+        { title: "Otonom SÃ¼rÃ¼ÅŸ Teknolojisinde Yeni Seviye", excerpt: "Mercedes-Benz, Level 3 otonom sÃ¼rÃ¼ÅŸ sistemini daha fazla Ã¼lkede kullanÄ±ma aÃ§tÄ±ÄŸÄ±nÄ± duyurdu. Sistem, 60 km/s'ye kadar olan hÄ±zlarda sÃ¼rÃ¼cÃ¼nÃ¼n ellerini direksiyondan Ã§ekmesine izin veriyor.", date: today, category: "Teknoloji" },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchNews();
+  }, []);
+
+  return (
+    <section className="py-24 px-8 md:px-16 carbon-pattern min-h-screen">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex justify-between items-end mb-12">
+          <div>
+            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">SektÃ¶rel_Ä°stihbarat</h2>
+            <h3 className="font-headline text-5xl font-black uppercase italic tracking-tighter">Otomobil_Haberleri</h3>
+          </div>
+          <button 
+            onClick={fetchNews}
+            disabled={loading}
+            className="flex items-center gap-2 text-neutral-500 hover:text-brand-red transition-colors font-headline text-[10px] uppercase tracking-widest font-bold"
+          >
+            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+            AkÄ±ÅŸÄ±_Yenile
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="space-y-8">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-32 bg-white/5 animate-pulse border-l-2 border-neutral-800" />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <AnimatePresence mode="popLayout">
+              {news.map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-neutral-950/50 border-l-2 border-brand-red p-8 group hover:bg-brand-red/5 transition-all duration-300"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[10px] font-headline uppercase tracking-widest text-brand-red font-bold">
+                      {item.category} // {item.date}
+                    </span>
+                    <ArrowRight size={16} className="text-neutral-700 group-hover:text-brand-red group-hover:translate-x-2 transition-all" />
+                  </div>
+                  <h4 className="font-headline text-2xl font-black uppercase tracking-tight mb-3 group-hover:text-white transition-colors">
+                    {item.title}
+                  </h4>
+                  <p className="text-neutral-400 font-body text-sm leading-relaxed max-w-3xl">
+                    {item.excerpt}
+                  </p>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('Dashboard');
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    try {
+      return (localStorage.getItem('kdk_theme') as 'dark' | 'light') || 'dark';
+    } catch { return 'dark'; }
+  });
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    try { localStorage.setItem('kdk_theme', newTheme); } catch {}
+  };
+
+  const isDark = theme === 'dark';
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <div className={`min-h-screen transition-colors duration-500 selection:bg-brand-red selection:text-white ${
+      isDark ? 'bg-brand-dark text-neutral-200' : 'bg-neutral-100 text-neutral-900'
+    }`}>
+      <Header 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        onSettingsClick={() => setIsSettingsOpen(true)}
+        onMenuClick={() => setIsMobileMenuOpen(true)}
+      />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] lg:hidden"
+          >
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="relative h-full w-64"
+            >
+              <Sidebar 
+                activeTab={activeTab} 
+                setActiveTab={setActiveTab} 
+                mobile 
+                onClose={() => setIsMobileMenuOpen(false)} 
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Settings Modal */}
+      <AnimatePresence>
+        {isSettingsOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[70] flex items-center justify-center p-4"
+          >
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={() => setIsSettingsOpen(false)} />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className={`relative border p-8 max-w-md w-full headlight-glow ${
+                isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-200 shadow-2xl'
+              }`}
+            >
+              <div className="flex justify-between items-center mb-8">
+                <h3 className={`font-headline text-2xl font-black uppercase tracking-tight ${isDark ? '' : 'text-neutral-900'}`}>Sistem_AyarlarÄ±</h3>
+                <button onClick={() => setIsSettingsOpen(false)} className={`${isDark ? 'text-neutral-500' : 'text-neutral-400'} hover:text-brand-red transition-colors`}>
+                  <RefreshCw size={20} className="rotate-45" />
+                </button>
+              </div>
+              
+              <div className="space-y-6">
+                {/* Tema AyarÄ± */}
+                <div>
+                  <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>Tema_AyarÄ±</h4>
+                  <div className={`flex items-center justify-between p-4 border rounded ${isDark ? 'border-white/10 bg-white/5' : 'border-neutral-200 bg-neutral-50'}`}>
+                    <div className="flex items-center gap-3">
+                      {isDark ? <Moon size={18} className="text-brand-red" /> : <Sun size={18} className="text-amber-500" />}
+                      <span className={`font-headline text-sm font-bold uppercase tracking-widest ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+                        {isDark ? 'Koyu Mod' : 'AÃ§Ä±k Mod'}
+                      </span>
+                    </div>
+                    <button 
+                      onClick={toggleTheme}
+                      className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
+                        isDark ? 'bg-brand-red' : 'bg-neutral-300'
+                      }`}
+                    >
+                      <motion.div 
+                        className="absolute top-1 w-5 h-5 bg-white rounded-full shadow-md"
+                        animate={{ left: isDark ? '2px' : '30px' }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                {/* BoÅŸ Alan - Gelecekte KullanÄ±lacak */}
+                <div>
+                  <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>DiÄŸer_Ayarlar</h4>
+                  <div className={`flex items-center justify-center p-8 border border-dashed rounded ${isDark ? 'border-white/10' : 'border-neutral-300'}`}>
+                    <span className={`font-headline text-[10px] uppercase tracking-widest font-bold ${isDark ? 'text-neutral-600' : 'text-neutral-400'}`}>YakÄ±nda_Eklenecek</span>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setIsSettingsOpen(false)}
+                className="w-full mt-10 bg-brand-red text-white py-4 font-headline font-bold uppercase tracking-widest text-xs hover:brightness-110 transition-all"
+              >
+                ArayÃ¼zÃ¼_Kapat
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      <main className={`lg:ml-64 pt-20 ${isDark ? 'mechanical-grid' : ''}`}>
+        <AnimatePresence mode="wait">
+          {activeTab === 'News' && (
+            <motion.div
+              key="news"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <NewsSection />
+            </motion.div>
+          )}
+          {activeTab === 'CarOfTheDay' && (
+            <motion.div
+              key="caroftheday"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <CarOfTheDaySection />
+            </motion.div>
+          )}
+          {activeTab === 'Drafts' && (
+            <motion.div
+              key="drafts"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <DraftsSection />
+            </motion.div>
+          )}
+          {activeTab === 'Dashboard' && (
+            <motion.div
+              key="dashboard"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              {/* Hero Section */}
+        <section className="relative min-h-[80vh] flex items-center px-8 md:px-16 overflow-hidden carbon-pattern">
+          <div className="absolute inset-0 opacity-10 pointer-events-none">
+             <div className="absolute top-1/4 right-1/4 w-96 h-96 border-[12px] border-brand-red/30 rounded-full animate-pulse" />
+             <div className="absolute bottom-1/4 left-1/4 w-64 h-64 border-[8px] border-brand-red/20 rounded-full animate-bounce" />
+          </div>
+          
+          <div className="relative z-10 max-w-4xl">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <h1 className="font-headline text-6xl md:text-9xl font-black tracking-tighter leading-none mb-6">
+                KDK AUTO <span className="text-brand-red">1864</span><br />
+                MÃœHENDÄ°SLÄ°K
+              </h1>
+              <p className="font-body text-xl text-neutral-400 max-w-2xl mb-12 leading-relaxed">
+                Mekanik hassasiyetin ham kinetik enerjiyle buluÅŸtuÄŸu yer. YarÄ±ÅŸ dÃ¼nyasÄ±nÄ±n yeni dÃ¶nemi iÃ§in yÃ¼ksek performanslÄ± iÃ§ten yanmalÄ± sistemler ve aerodinamik ÅŸasiler tasarlÄ±yoruz.
+              </p>
+              
+              <div className="flex flex-wrap gap-6">
+                <button className="bg-brand-red text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95">
+                  Sistemi BaÅŸlat
+                </button>
+                <button className="border border-white/10 text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:bg-white/5 transition-all headlight-glow active:scale-95">
+                  TaslaklarÄ± GÃ¶rÃ¼ntÃ¼le
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Projects Section */}
+        <section className="py-24 px-8 md:px-16 bg-neutral-950">
+          <div className="mb-16">
+            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Son_Montajlar</h2>
+            <h3 className="font-headline text-5xl font-black uppercase italic tracking-tighter">Mevcut_Projeler</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <ProjectCard 
+              size="large"
+              title="Proje: Spectre-7"
+              subtitle="Entegre termal yayÄ±lÄ±m tÃ¼nellerine sahip devrim niteliÄŸinde aktif aero ÅŸasi."
+              tag="Aero-OdaklÄ±"
+              image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1920"
+            />
+            <ProjectCard 
+              title="Ãœnite_04: GiriÅŸ"
+              subtitle="YÃ¼ksek basÄ±nÃ§lÄ± indÃ¼ksiyon sistemleri iÃ§in karbon fiber akÄ±ÅŸ analizi."
+              tag="Ä°tici GÃ¼Ã§"
+              image="https://images.unsplash.com/photo-1486497395442-885e218f2467?auto=format&fit=crop&q=80&w=800"
+            />
+            <ProjectCard 
+              title="Titan_OcaÄŸÄ±"
+              subtitle="DÃ¶vme titanyum iÃ§ bileÅŸenler iÃ§in stres testi telemetrisi."
+              tag="Dinamikler"
+              image="https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=800"
+            />
+            <ProjectCard 
+              size="large"
+              title="Hiper-Yanma"
+              subtitle="Maksimum RPM'de %98 termal verimlilik iÃ§in patentli ateÅŸleme dizilimi."
+              tag="Ä°tici GÃ¼Ã§"
+              image="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1920"
+            />
+          </div>
+        </section>
+
+        {/* Technical Insights */}
+        <section className="py-24 px-8 md:px-16 carbon-pattern">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-20 items-center">
+            <div className="flex-1 space-y-12">
+              <h2 className="font-headline text-6xl font-black italic tracking-tighter uppercase">Teknik_Ä°ncelemeler</h2>
+              
+              <div className="space-y-10">
+                {[
+                  { icon: Bolt, title: 'Hiper-Yanma', desc: 'Patentli ateÅŸleme dizilimi ile %98 termal verimlilik.' },
+                  { icon: Gauge, title: 'Kinetik Geri KazanÄ±m', desc: 'DÃ¶ngÃ¼ baÅŸÄ±na 400kJ geri dÃ¶nÃ¼ÅŸtÃ¼ren rejeneratif fren sistemleri.' },
+                  { icon: LayoutGrid, title: 'ModÃ¼ler Åasi', desc: 'Ã‡eÅŸitli koÅŸullar iÃ§in deÄŸiÅŸtirilebilir sÃ¼spansiyon geometrileri.' }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-8 items-start group">
+                    <div className="w-16 h-16 bg-brand-red flex items-center justify-center rounded-none shrink-0 group-hover:scale-110 transition-transform">
+                      <item.icon size={24} className="text-white" />
+                    </div>
+                    <div>
+                      <h5 className="font-headline font-bold text-xl mb-2 uppercase tracking-tight">{item.title}</h5>
+                      <p className="text-neutral-400 font-body leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="flex-1 relative">
+              <div className="aspect-square bg-gradient-to-br from-brand-red/20 to-black p-1 border border-white/5 relative group">
+                <img 
+                  src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=1000" 
+                  alt="Engine Detail"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
+                />
+                <div className="absolute -top-4 -right-4 bg-brand-red px-6 py-2 text-white font-headline text-[10px] font-bold tracking-widest">
+                  V8-YAPILANDIRMA_YÃœKLENDÄ°
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </motion.div>
+    )}
+  </AnimatePresence>
+
+        {/* Footer */}
+        <footer className={`py-16 px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950 border-t border-white/5' : 'bg-white border-t border-neutral-200'}`}>
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+            <div className="space-y-2 text-center md:text-left">
+              <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-600">
+                Â©2024 KDK AUTO 1864. TÃœM Ã–ZELLÄ°KLER DOÄRULANDI.
+              </div>
+              <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-brand-red font-bold">
+                SertifikalÄ± Performans_MimarÄ±
+              </div>
+            </div>
+            
+            <nav className="flex gap-10">
+              {[
+                { label: 'KÄ±lavuzlar', id: 'Manuals' },
+                { label: 'Terminoloji', id: 'Terminology' },
+                { label: 'Gizlilik', id: 'Privacy' }
+              ].map(item => (
+                <a key={item.id} href="#" className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-500 hover:text-brand-red transition-colors">
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+            
+            <div className="flex gap-6">
+              <Globe size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
+              <Share2 size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+    </ThemeContext.Provider>
+  );
+}
