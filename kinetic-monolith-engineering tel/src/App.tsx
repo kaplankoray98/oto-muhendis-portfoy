@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 
 // --- Components ---
@@ -742,6 +743,7 @@ export default function App() {
         </footer>
       </main>
       <Analytics />
+      <SpeedInsights />
     </div>
   );
 }
