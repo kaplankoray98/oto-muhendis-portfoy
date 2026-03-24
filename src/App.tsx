@@ -44,9 +44,9 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
 
   return (
     <aside className={sidebarClasses}>
-      <div className="px-6 mb-10 flex justify-between items-center">
+      <div className="px-6 mt-8 mb-10 flex justify-between items-center">
         <div>
-          <div className={`text-lg font-bold font-headline ${isDark ? 'text-neutral-100' : 'text-neutral-900'}`}>KDK AUTO 1864</div>
+          <div className={`text-2xl font-bold font-headline ${isDark ? 'text-neutral-100' : 'text-neutral-900'}`}>KDK AUTO 1864</div>
 
         </div>
         {mobile && (
