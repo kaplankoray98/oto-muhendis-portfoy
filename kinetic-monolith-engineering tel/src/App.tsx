@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Settings, 
-  Menu, 
-  Star, 
-  Gauge, 
-  PenTool, 
-  Bolt, 
+import {
+  Settings,
+  Menu,
+  Star,
+  Gauge,
+  PenTool,
+  Bolt,
   LayoutGrid,
   ArrowRight,
   Globe,
@@ -28,24 +28,24 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
     { id: 'News', label: 'Otomotiv Haberleri', icon: Newspaper },
   ];
 
-  const sidebarClasses = mobile 
+  const sidebarClasses = mobile
     ? "flex flex-col pt-24 pb-8 h-full w-64 bg-neutral-950 border-r border-white/5 shadow-2xl"
     : "hidden lg:flex flex-col pt-24 pb-8 h-full fixed left-0 top-0 w-64 z-40 bg-neutral-950 border-r border-white/5";
 
   return (
     <aside className={sidebarClasses}>
-      <div className="px-6 mb-10 flex justify-between items-center">
-        <div>
+      <div className="px-6 mb-10 flex items-center justify-center relative md:justify-between">
+        <div className="text-center md:text-left w-full">
           <div className="text-lg font-bold text-neutral-100 font-headline">KDK AUTO 1864</div>
           <div className="font-headline uppercase text-[10px] tracking-[0.2em] text-brand-red">V8-ÇİFT-TURBO</div>
         </div>
         {mobile && (
-          <button onClick={onClose} className="text-neutral-500 hover:text-white lg:hidden">
+          <button onClick={onClose} className="absolute right-6 text-neutral-500 hover:text-white lg:hidden">
             <ChevronRight className="rotate-180" size={20} />
           </button>
         )}
       </div>
-      
+
       <nav className="flex flex-col gap-1 relative">
         {menuItems.map((item) => {
           const isActive = activeTab === item.id;
@@ -56,9 +56,8 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
                 setActiveTab(item.id);
                 if (onClose) onClose();
               }}
-              className={`relative px-6 py-4 flex items-center gap-4 transition-colors duration-300 group overflow-hidden ${
-                isActive ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'
-              }`}
+              className={`relative px-6 py-4 flex items-center gap-4 transition-colors duration-300 group overflow-hidden ${isActive ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'
+                }`}
             >
               {isActive && (
                 <motion.div
@@ -77,9 +76,9 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
                 <span className="font-headline uppercase text-[11px] tracking-widest font-bold">
                   {item.label}
                 </span>
-                
+
                 {isActive && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     className="ml-auto flex items-center"
@@ -103,8 +102,8 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
   );
 };
 
-const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: { 
-  onSettingsClick: () => void, 
+const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: {
+  onSettingsClick: () => void,
   onMenuClick: () => void,
   activeTab: string,
   setActiveTab: (id: string) => void
@@ -112,12 +111,12 @@ const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: {
   <header className="bg-neutral-950/80 backdrop-blur-md fixed top-0 left-0 right-0 h-20 z-50 flex items-center px-4 md:px-8 border-b border-white/5">
     {/* Sol taraf (Logoyu ortalamak için boşluk) */}
     <div className="flex-1" />
-    
+
     <nav className="flex-shrink-0 flex justify-center items-center px-2">
       <div className="relative group cursor-pointer" onClick={() => setActiveTab('Dashboard')}>
         {/* Arka plan kırmızı ışık yansıması */}
         <div className="absolute inset-0 bg-brand-red/40 blur-2xl rounded-full scale-125 md:scale-150 opacity-50 group-hover:opacity-80 transition-opacity" />
-        
+
         <span className="relative z-10 font-headline text-base sm:text-2xl md:text-5xl font-black tracking-[0.05em] sm:tracking-[0.2em] md:tracking-[0.4em] text-white uppercase italic drop-shadow-[0_0_15px_rgba(212,43,59,0.8)] whitespace-nowrap">
           KDK AUTO
         </span>
@@ -126,13 +125,13 @@ const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: {
 
     {/* Sağ taraf (Ayarlar ve Menü butonları) */}
     <div className="flex-1 flex justify-end items-center gap-1 sm:gap-4">
-      <button 
+      <button
         onClick={onSettingsClick}
         className="p-2 text-neutral-400 hover:text-brand-red transition-colors active:scale-90"
       >
         <Settings size={20} />
       </button>
-      <button 
+      <button
         onClick={onMenuClick}
         className="p-2 text-neutral-400 hover:text-brand-red transition-colors lg:hidden active:scale-90"
       >
@@ -143,21 +142,20 @@ const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: {
 );
 
 const ProjectCard = ({ title, subtitle, tag, image, size = 'small' }) => (
-  <motion.div 
+  <motion.div
     whileHover={{ scale: 1.01 }}
-    className={`relative group overflow-hidden bg-brand-surface rounded-none border-l-2 border-brand-red headlight-glow ${
-      size === 'large' ? 'md:col-span-8 h-[350px] md:h-[450px]' : 'md:col-span-4 h-[350px] md:h-[450px]'
-    }`}
+    className={`relative group overflow-hidden bg-brand-surface rounded-none border-l-2 border-brand-red headlight-glow ${size === 'large' ? 'md:col-span-8 h-[350px] md:h-[450px]' : 'md:col-span-4 h-[350px] md:h-[450px]'
+      }`}
   >
     <div className="carbon-pattern absolute inset-0 opacity-20 pointer-events-none" />
-    <img 
-      src={image} 
+    <img
+      src={image}
       alt={title}
       referrerPolicy="no-referrer"
       className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700 grayscale group-hover:grayscale-0"
     />
     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
-    
+
     <div className="relative h-full p-6 md:p-8 flex flex-col justify-between z-10">
       <div>
         <div className="flex justify-between items-start mb-4 md:mb-6">
@@ -169,7 +167,7 @@ const ProjectCard = ({ title, subtitle, tag, image, size = 'small' }) => (
         <h3 className="font-headline text-2xl md:text-3xl font-black uppercase tracking-tight mb-2">{title}</h3>
         <p className="text-neutral-400 font-body text-xs md:text-sm max-w-xs">{subtitle}</p>
       </div>
-      
+
       <div className="flex items-center justify-between">
         <div className="flex gap-4 md:gap-6">
           <div>
@@ -191,16 +189,16 @@ const ProjectCard = ({ title, subtitle, tag, image, size = 'small' }) => (
 );
 
 const CarOfTheDaySection = () => {
-  const [car, setCar] = useState<{ 
-    name: string; 
-    brand: string; 
-    year: string; 
-    engine: string; 
-    power: string; 
+  const [car, setCar] = useState<{
+    name: string;
+    brand: string;
+    year: string;
+    engine: string;
+    power: string;
     torque: string;
     zeroToHundred: string;
     marketValue: string;
-    story: string; 
+    story: string;
     oldImage: string;
     newImage: string;
   } | null>(null);
@@ -217,7 +215,7 @@ const CarOfTheDaySection = () => {
           responseMimeType: "application/json",
         }
       });
-      
+
       const data = JSON.parse(response.text);
       setCar(data);
     } catch (error) {
@@ -249,11 +247,11 @@ const CarOfTheDaySection = () => {
       <div className="max-w-6xl mx-auto">
         <h2 className="font-headline text-[10px] md:text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Günlük_Seçim</h2>
         <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black uppercase italic tracking-tighter mb-8 md:mb-12">Günün_Arabası</h3>
-        
+
         {loading ? (
           <div className="h-[400px] md:h-[600px] bg-white/5 animate-pulse border border-white/10" />
         ) : car && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-neutral-900/50 border border-white/10 overflow-hidden headlight-glow"
@@ -293,7 +291,7 @@ const CarOfTheDaySection = () => {
                   </h5>
                   <p className="text-neutral-300 font-body leading-relaxed text-base md:text-lg italic">"{car.story}"</p>
                 </div>
-                
+
                 <div className="space-y-6 md:space-y-8">
                   <div className="grid grid-cols-2 gap-4 md:gap-6">
                     <div>
@@ -313,7 +311,7 @@ const CarOfTheDaySection = () => {
                       <div className="font-headline text-xs md:text-sm font-bold text-white uppercase">{car.engine}</div>
                     </div>
                   </div>
-                  
+
                   <button onClick={fetchCar} className="w-full py-4 md:py-5 bg-white/5 border border-white/10 text-white font-headline text-[9px] md:text-[10px] font-bold uppercase tracking-widest hover:bg-brand-red hover:border-brand-red transition-all active:scale-95">
                     Başka_Bir_Efsane_Keşfet
                   </button>
@@ -368,7 +366,7 @@ const NewsSection = () => {
           responseMimeType: "application/json",
         }
       });
-      
+
       const data = JSON.parse(response.text);
       setNews(data);
     } catch (error) {
@@ -395,7 +393,7 @@ const NewsSection = () => {
             <h2 className="font-headline text-[10px] md:text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Sektörel_İstihbarat</h2>
             <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black uppercase italic tracking-tighter">Otomobil_Haberleri</h3>
           </div>
-          <button 
+          <button
             onClick={fetchNews}
             disabled={loading}
             className="flex items-center gap-2 text-neutral-500 hover:text-brand-red transition-colors font-headline text-[9px] md:text-[10px] uppercase tracking-widest font-bold"
@@ -451,14 +449,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-brand-dark selection:bg-brand-red selection:text-white">
-      <Header 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+      <Header
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
         onSettingsClick={() => setIsSettingsOpen(true)}
         onMenuClick={() => setIsMobileMenuOpen(true)}
       />
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      
+
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -476,11 +474,11 @@ export default function App() {
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="relative h-full w-64"
             >
-              <Sidebar 
-                activeTab={activeTab} 
-                setActiveTab={setActiveTab} 
-                mobile 
-                onClose={() => setIsMobileMenuOpen(false)} 
+              <Sidebar
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                mobile
+                onClose={() => setIsMobileMenuOpen(false)}
               />
             </motion.div>
           </motion.div>
@@ -509,7 +507,7 @@ export default function App() {
                   <RefreshCw size={20} className="rotate-45" />
                 </button>
               </div>
-              
+
               <div className="space-y-6">
                 {[
                   { label: 'Çekirdek Tanılama', status: 'Çevrimiçi', color: 'text-emerald-500' },
@@ -524,7 +522,7 @@ export default function App() {
                 ))}
               </div>
 
-              <button 
+              <button
                 onClick={() => setIsSettingsOpen(false)}
                 className="w-full mt-10 bg-brand-red text-white py-4 font-headline font-bold uppercase tracking-widest text-xs hover:brightness-110 transition-all"
               >
@@ -534,7 +532,7 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       <main className="lg:ml-64 pt-20 mechanical-grid">
         <AnimatePresence mode="wait">
           {activeTab === 'News' && (
@@ -575,132 +573,132 @@ export default function App() {
               exit={{ opacity: 0, y: -20 }}
             >
               {/* Hero Section */}
-        <section className="relative min-h-[80vh] flex items-center px-4 sm:px-8 md:px-16 overflow-hidden carbon-pattern">
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-             <div className="absolute top-1/4 right-1/4 w-96 h-96 border-[12px] border-brand-red/30 rounded-full animate-pulse" />
-             <div className="absolute bottom-1/4 left-1/4 w-64 h-64 border-[8px] border-brand-red/20 rounded-full animate-bounce" />
-          </div>
-          
-          <div className="relative z-10 max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <h1 className="font-headline text-4xl sm:text-8xl md:text-[10rem] font-black tracking-tight sm:tracking-tighter leading-[1] md:leading-[0.85] mb-6 drop-shadow-[0_0_40px_rgba(212,43,59,0.5)]">
-                <motion.span 
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="block"
-                >
-                  KDK AUTO <span className="text-brand-red inline-block hover:scale-105 transition-transform cursor-default">1864</span>
-                </motion.span>
-                <motion.span 
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  className="block text-white/90 text-4xl sm:text-8xl md:text-[10rem]"
-                >
-                  MÜHENDİSLİK
-                </motion.span>
-              </h1>
-              <p className="font-body text-xs sm:text-xl text-neutral-400 max-w-2xl mb-8 md:mb-12 leading-relaxed">
-                Mekanik hassasiyetin ham kinetik enerjiyle buluştuğu yer. Yarış dünyasının yeni dönemi için yüksek performanslı içten yanmalı sistemler ve aerodinamik şasiler tasarlıyoruz.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-                <button className="w-full sm:w-auto bg-brand-red text-white px-6 md:px-10 py-4 md:py-5 rounded-none font-headline font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-xs md:text-base hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95">
-                  Sistemi Başlat
-                </button>
-                <button className="w-full sm:w-auto border border-white/10 text-white px-6 md:px-10 py-4 md:py-5 rounded-none font-headline font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-xs md:text-base hover:bg-white/5 transition-all headlight-glow active:scale-95">
-                  Taslakları Görüntüle
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+              <section className="relative min-h-[80vh] flex items-center px-4 sm:px-8 md:px-16 overflow-hidden carbon-pattern">
+                <div className="absolute inset-0 opacity-10 pointer-events-none">
+                  <div className="absolute top-1/4 right-1/4 w-96 h-96 border-[12px] border-brand-red/30 rounded-full animate-pulse" />
+                  <div className="absolute bottom-1/4 left-1/4 w-64 h-64 border-[8px] border-brand-red/20 rounded-full animate-bounce" />
+                </div>
 
-        {/* Projects Section */}
-        <section className="py-12 md:py-24 px-4 sm:px-8 md:px-16 bg-neutral-950">
-          <div className="mb-8 md:mb-16">
-            <h2 className="font-headline text-[10px] md:text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Son_Montajlar</h2>
-            <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black uppercase italic tracking-tighter">Mevcut_Projeler</h3>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-            <ProjectCard 
-              size="large"
-              title="Proje: Spectre-7"
-              subtitle="Entegre termal yayılım tünellerine sahip devrim niteliğinde aktif aero şasi."
-              tag="Aero-Odaklı"
-              image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1920"
-            />
-            <ProjectCard 
-              title="Ünite_04: Giriş"
-              subtitle="Yüksek basınçlı indüksiyon sistemleri için karbon fiber akış analizi."
-              tag="İtici Güç"
-              image="https://images.unsplash.com/photo-1486497395442-885e218f2467?auto=format&fit=crop&q=80&w=800"
-            />
-            <ProjectCard 
-              title="Titan_Ocağı"
-              subtitle="Dövme titanyum iç bileşenler için stres testi telemetrisi."
-              tag="Dinamikler"
-              image="https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=800"
-            />
-            <ProjectCard 
-              size="large"
-              title="Hiper-Yanma"
-              subtitle="Maksimum RPM'de %98 termal verimlilik için patentli ateşleme dizilimi."
-              tag="İtici Güç"
-              image="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1920"
-            />
-          </div>
-        </section>
+                <div className="relative z-10 max-w-4xl">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                  >
+                    <h1 className="font-headline text-4xl sm:text-8xl md:text-[10rem] font-black tracking-tight sm:tracking-tighter leading-[1] md:leading-[0.85] mb-6 drop-shadow-[0_0_40px_rgba(212,43,59,0.5)]">
+                      <motion.span
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        className="block"
+                      >
+                        KDK AUTO <span className="text-brand-red inline-block hover:scale-105 transition-transform cursor-default">1864</span>
+                      </motion.span>
+                      <motion.span
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                        className="block text-white/90 text-4xl sm:text-8xl md:text-[10rem]"
+                      >
+                        MÜHENDİSLİK
+                      </motion.span>
+                    </h1>
+                    <p className="font-body text-xs sm:text-xl text-neutral-400 max-w-2xl mb-8 md:mb-12 leading-relaxed">
+                      Mekanik hassasiyetin ham kinetik enerjiyle buluştuğu yer. Yarış dünyasının yeni dönemi için yüksek performanslı içten yanmalı sistemler ve aerodinamik şasiler tasarlıyoruz.
+                    </p>
 
-        {/* Technical Insights */}
-        <section className="py-12 md:py-24 px-4 sm:px-8 md:px-16 carbon-pattern">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-10 md:gap-20 items-center">
-            <div className="flex-1 space-y-8 md:space-y-12">
-              <h2 className="font-headline text-2xl sm:text-4xl md:text-6xl font-black italic tracking-tighter uppercase">Teknik_İncelemeler</h2>
-              
-              <div className="space-y-6 md:space-y-10">
-                {[
-                  { icon: Bolt, title: 'Hiper-Yanma', desc: 'Patentli ateşleme dizilimi ile %98 termal verimlilik.' },
-                  { icon: Gauge, title: 'Kinetik Geri Kazanım', desc: 'Döngü başına 400kJ geri dönüştüren rejeneratif fren sistemleri.' },
-                  { icon: LayoutGrid, title: 'Modüler Şasi', desc: 'Çeşitli koşullar için değiştirilebilir süspansiyon geometrileri.' }
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-4 md:gap-8 items-start group">
-                    <div className="w-12 h-12 md:w-16 md:h-16 bg-brand-red flex items-center justify-center rounded-none shrink-0 group-hover:scale-110 transition-transform">
-                      <item.icon size={20} className="text-white md:size-24" />
+                    <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
+                      <button className="w-full sm:w-auto bg-brand-red text-white px-6 md:px-10 py-4 md:py-5 rounded-none font-headline font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-xs md:text-base hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95">
+                        Sistemi Başlat
+                      </button>
+                      <button className="w-full sm:w-auto border border-white/10 text-white px-6 md:px-10 py-4 md:py-5 rounded-none font-headline font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-xs md:text-base hover:bg-white/5 transition-all headlight-glow active:scale-95">
+                        Taslakları Görüntüle
+                      </button>
                     </div>
-                    <div>
-                      <h5 className="font-headline font-bold text-lg md:text-xl mb-1 md:mb-2 uppercase tracking-tight">{item.title}</h5>
-                      <p className="text-neutral-400 font-body text-sm md:text-base leading-relaxed">{item.desc}</p>
+                  </motion.div>
+                </div>
+              </section>
+
+              {/* Projects Section */}
+              <section className="py-12 md:py-24 px-4 sm:px-8 md:px-16 bg-neutral-950">
+                <div className="mb-8 md:mb-16">
+                  <h2 className="font-headline text-[10px] md:text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Son_Montajlar</h2>
+                  <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black uppercase italic tracking-tighter">Mevcut_Projeler</h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                  <ProjectCard
+                    size="large"
+                    title="Proje: Spectre-7"
+                    subtitle="Entegre termal yayılım tünellerine sahip devrim niteliğinde aktif aero şasi."
+                    tag="Aero-Odaklı"
+                    image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1920"
+                  />
+                  <ProjectCard
+                    title="Ünite_04: Giriş"
+                    subtitle="Yüksek basınçlı indüksiyon sistemleri için karbon fiber akış analizi."
+                    tag="İtici Güç"
+                    image="https://images.unsplash.com/photo-1486497395442-885e218f2467?auto=format&fit=crop&q=80&w=800"
+                  />
+                  <ProjectCard
+                    title="Titan_Ocağı"
+                    subtitle="Dövme titanyum iç bileşenler için stres testi telemetrisi."
+                    tag="Dinamikler"
+                    image="https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=800"
+                  />
+                  <ProjectCard
+                    size="large"
+                    title="Hiper-Yanma"
+                    subtitle="Maksimum RPM'de %98 termal verimlilik için patentli ateşleme dizilimi."
+                    tag="İtici Güç"
+                    image="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1920"
+                  />
+                </div>
+              </section>
+
+              {/* Technical Insights */}
+              <section className="py-12 md:py-24 px-4 sm:px-8 md:px-16 carbon-pattern">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-10 md:gap-20 items-center">
+                  <div className="flex-1 space-y-8 md:space-y-12">
+                    <h2 className="font-headline text-2xl sm:text-4xl md:text-6xl font-black italic tracking-tighter uppercase">Teknik_İncelemeler</h2>
+
+                    <div className="space-y-6 md:space-y-10">
+                      {[
+                        { icon: Bolt, title: 'Hiper-Yanma', desc: 'Patentli ateşleme dizilimi ile %98 termal verimlilik.' },
+                        { icon: Gauge, title: 'Kinetik Geri Kazanım', desc: 'Döngü başına 400kJ geri dönüştüren rejeneratif fren sistemleri.' },
+                        { icon: LayoutGrid, title: 'Modüler Şasi', desc: 'Çeşitli koşullar için değiştirilebilir süspansiyon geometrileri.' }
+                      ].map((item, i) => (
+                        <div key={i} className="flex gap-4 md:gap-8 items-start group">
+                          <div className="w-12 h-12 md:w-16 md:h-16 bg-brand-red flex items-center justify-center rounded-none shrink-0 group-hover:scale-110 transition-transform">
+                            <item.icon size={20} className="text-white md:size-24" />
+                          </div>
+                          <div>
+                            <h5 className="font-headline font-bold text-lg md:text-xl mb-1 md:mb-2 uppercase tracking-tight">{item.title}</h5>
+                            <p className="text-neutral-400 font-body text-sm md:text-base leading-relaxed">{item.desc}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-            
-            <div className="flex-1 relative">
-              <div className="aspect-square bg-gradient-to-br from-brand-red/20 to-black p-1 border border-white/5 relative group">
-                <img 
-                  src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=1000" 
-                  alt="Engine Detail"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
-                />
-                <div className="absolute -top-4 -right-4 bg-brand-red px-6 py-2 text-white font-headline text-[10px] font-bold tracking-widest">
-                  V8-YAPILANDIRMA_YÜKLENDİ
+
+                  <div className="flex-1 relative">
+                    <div className="aspect-square bg-gradient-to-br from-brand-red/20 to-black p-1 border border-white/5 relative group">
+                      <img
+                        src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=1000"
+                        alt="Engine Detail"
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
+                      />
+                      <div className="absolute -top-4 -right-4 bg-brand-red px-6 py-2 text-white font-headline text-[10px] font-bold tracking-widest">
+                        V8-YAPILANDIRMA_YÜKLENDİ
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </motion.div>
-    )}
-  </AnimatePresence>
+              </section>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Footer */}
         <footer className="bg-neutral-950 py-12 md:py-16 px-4 sm:px-8 border-t border-white/5">
@@ -713,7 +711,7 @@ export default function App() {
                 Sertifikalı Performans_Mimarı
               </div>
             </div>
-            
+
             <nav className="flex flex-wrap justify-center gap-6 md:gap-10">
               {[
                 { label: 'Kılavuzlar', id: 'Manuals' },
@@ -725,7 +723,7 @@ export default function App() {
                 </a>
               ))}
             </nav>
-            
+
             <div className="flex gap-6">
               <Globe size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
               <Share2 size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
