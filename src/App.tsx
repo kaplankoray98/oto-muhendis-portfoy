@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Settings,
@@ -19,6 +19,7 @@ import {
   Moon
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
+import { Analytics } from '@vercel/analytics/react';
 
 // Theme Context
 const ThemeContext = createContext<{ theme: 'dark' | 'light'; toggleTheme: () => void }>({
@@ -928,6 +929,7 @@ export default function App() {
           </footer>
         </main>
       </div>
+      <Analytics />
     </ThemeContext.Provider>
   );
 }
