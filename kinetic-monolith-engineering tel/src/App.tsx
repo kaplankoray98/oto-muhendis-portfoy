@@ -117,9 +117,17 @@ const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: {
         {/* Arka plan kırmızı ışık yansıması */}
         <div className="absolute inset-0 bg-brand-red/40 blur-2xl rounded-full scale-125 md:scale-150 opacity-50 group-hover:opacity-80 transition-opacity" />
 
-        <span className="relative z-10 font-headline text-base sm:text-2xl md:text-5xl font-black tracking-[0.05em] sm:tracking-[0.2em] md:tracking-[0.4em] text-white uppercase italic drop-shadow-[0_0_15px_rgba(212,43,59,0.8)] whitespace-nowrap">
-          KDK AUTO
-        </span>
+        <div
+          onClick={() => {
+            setActiveTab('Dashboard');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="relative group cursor-pointer flex items-center justify-center transition-transform hover:scale-105 active:scale-95 duration-200"
+        >
+          <span className="relative z-10 font-headline text-base sm:text-2xl md:text-5xl font-black tracking-[0.05em] sm:tracking-[0.2em] md:tracking-[0.4em] text-white uppercase italic drop-shadow-[0_0_15px_rgba(212,43,59,0.8)] whitespace-nowrap">
+            KDK AUTO
+          </span>
+        </div>
       </div>
     </nav>
 
