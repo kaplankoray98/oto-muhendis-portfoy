@@ -47,7 +47,7 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
       <div className="px-6 mb-10 flex justify-between items-center">
         <div>
           <div className={`text-lg font-bold font-headline ${isDark ? 'text-neutral-100' : 'text-neutral-900'}`}>KDK AUTO 1864</div>
-          <div className="font-headline uppercase text-[10px] tracking-[0.2em] text-brand-red">V8-ÇİFT-TURBO</div>
+
         </div>
         {mobile && (
           <button onClick={onClose} className={`${isDark ? 'text-neutral-500 hover:text-white' : 'text-neutral-400 hover:text-neutral-900'} lg:hidden`}>
