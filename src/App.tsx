@@ -862,7 +862,7 @@ export default function App() {
                         {[
                           { icon: Bolt, title: 'Hiper-Yanma', desc: 'Patentli ateşleme dizilimi ile %98 termal verimlilik.' },
                           { icon: Gauge, title: 'Kinetik Geri Kazanım', desc: 'Döngü başına 400kJ geri dönüştüren rejeneratif fren sistemleri.' },
-                          { icon: LayoutGrid, title: 'Modüler Åasi', desc: 'Çeşitli koşullar için değiştirilebilir süspansiyon geometrileri.' }
+                          { icon: LayoutGrid, title: 'Modüler Şasi', desc: 'Çeşitli koşullar için değiştirilebilir süspansiyon geometrileri.' }
                         ].map((item, i) => (
                           <div key={i} className="flex gap-4 sm:gap-8 items-start group">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brand-red flex items-center justify-center rounded-none shrink-0 group-hover:scale-110 transition-transform">
