@@ -1,12 +1,12 @@
 ﻿import React, { useState, useEffect, createContext, useContext } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Settings, 
-  Menu, 
-  Star, 
-  Gauge, 
-  PenTool, 
-  Bolt, 
+import {
+  Settings,
+  Menu,
+  Star,
+  Gauge,
+  PenTool,
+  Bolt,
   LayoutGrid,
   ArrowRight,
   Globe,
@@ -23,7 +23,7 @@ import { GoogleGenAI } from "@google/genai";
 // Theme Context
 const ThemeContext = createContext<{ theme: 'dark' | 'light'; toggleTheme: () => void }>({
   theme: 'dark',
-  toggleTheme: () => {},
+  toggleTheme: () => { },
 });
 
 // --- Components ---
@@ -38,7 +38,7 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
     { id: 'News', label: 'Otomotiv Haberleri', icon: Newspaper },
   ];
 
-  const sidebarClasses = mobile 
+  const sidebarClasses = mobile
     ? `flex flex-col pt-24 pb-8 h-full w-64 shadow-2xl transition-colors duration-500 ${isDark ? 'bg-neutral-950 border-r border-white/5' : 'bg-white border-r border-neutral-200'}`
     : `hidden lg:flex flex-col pt-24 pb-8 h-full fixed left-0 top-0 w-64 z-40 transition-colors duration-500 ${isDark ? 'bg-neutral-950 border-r border-white/5' : 'bg-white border-r border-neutral-200'}`;
 
@@ -55,7 +55,7 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
           </button>
         )}
       </div>
-      
+
       <nav className="flex flex-col gap-1 relative">
         {menuItems.map((item) => {
           const isActive = activeTab === item.id;
@@ -66,9 +66,8 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
                 setActiveTab(item.id);
                 if (onClose) onClose();
               }}
-              className={`relative px-6 py-4 flex items-center gap-4 transition-colors duration-300 group overflow-hidden ${
-                isActive ? (isDark ? 'text-white' : 'text-neutral-900') : (isDark ? 'text-neutral-500 hover:text-neutral-300' : 'text-neutral-400 hover:text-neutral-700')
-              }`}
+              className={`relative px-6 py-4 flex items-center gap-4 transition-colors duration-300 group overflow-hidden ${isActive ? (isDark ? 'text-white' : 'text-neutral-900') : (isDark ? 'text-neutral-500 hover:text-neutral-300' : 'text-neutral-400 hover:text-neutral-700')
+                }`}
             >
               {isActive && (
                 <motion.div
@@ -87,9 +86,9 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
                 <span className="font-headline uppercase text-[11px] tracking-widest font-bold">
                   {item.label}
                 </span>
-                
+
                 {isActive && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     className="ml-auto flex items-center"
@@ -113,8 +112,8 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
   );
 };
 
-const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: { 
-  onSettingsClick: () => void, 
+const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: {
+  onSettingsClick: () => void,
   onMenuClick: () => void,
   activeTab: string,
   setActiveTab: (id: string) => void
@@ -122,53 +121,53 @@ const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: {
   const { theme } = useContext(ThemeContext);
   const isDark = theme === 'dark';
   return (
-  <header className={`backdrop-blur-md fixed top-0 left-0 right-0 h-16 sm:h-20 z-50 flex justify-between items-center px-4 sm:px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950/80 border-b border-white/5' : 'bg-white/80 border-b border-neutral-200'}`}>
-    <div className="flex-1 lg:hidden" /> {/* Spacer for mobile menu alignment if needed */}
-    
-    <nav className="flex flex-1 justify-center items-center">
-      <div className="relative group cursor-pointer" onClick={() => setActiveTab('Dashboard')}>
-        {/* Arka plan kırmızı ışık yansıması */}
-        <div className="absolute inset-0 bg-brand-red/40 blur-2xl rounded-full scale-150 opacity-50 group-hover:opacity-80 transition-opacity" />
-        
-        <span className={`relative z-10 font-headline text-xl sm:text-3xl md:text-5xl font-black tracking-[0.15em] sm:tracking-[0.3em] md:tracking-[0.4em] uppercase italic drop-shadow-[0_0_15px_rgba(212,43,59,0.8)] ${isDark ? 'text-white' : 'text-neutral-900'}`}>
-          KDK AUTO
-        </span>
-      </div>
-    </nav>
+    <header className={`backdrop-blur-md fixed top-0 left-0 right-0 h-16 sm:h-20 z-50 flex justify-between items-center px-4 sm:px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950/80 border-b border-white/5' : 'bg-white/80 border-b border-neutral-200'}`}>
+      <div className="flex-1 lg:hidden" /> {/* Spacer for mobile menu alignment if needed */}
 
-    <div className="flex items-center gap-4">
-      <button 
-        onClick={onSettingsClick}
-        className={`p-2 hover:text-brand-red transition-colors active:scale-90 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}
-      >
-        <Settings size={20} />
-      </button>
-      <button 
-        onClick={onMenuClick}
-        className={`p-2 hover:text-brand-red transition-colors lg:hidden active:scale-90 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}
-      >
-        <Menu size={20} />
-      </button>
-    </div>
-  </header>
-);};
+      <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center pr-2 sm:pr-4">
+        <div className="relative group cursor-pointer" onClick={() => setActiveTab('Dashboard')}>
+          {/* Arka plan kırmızı ışık yansıması */}
+          <div className="absolute inset-0 bg-brand-red/40 blur-2xl rounded-full scale-150 opacity-50 group-hover:opacity-80 transition-opacity" />
+
+          <span className={`relative z-10 font-headline text-xl sm:text-3xl md:text-5xl font-black tracking-[0.15em] sm:tracking-[0.3em] md:tracking-[0.4em] uppercase italic drop-shadow-[0_0_15px_rgba(212,43,59,0.8)] ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+            KDK AUTO
+          </span>
+        </div>
+      </nav>
+
+      <div className="flex items-center gap-4">
+        <button
+          onClick={onSettingsClick}
+          className={`p-2 hover:text-brand-red transition-colors active:scale-90 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}
+        >
+          <Settings size={20} />
+        </button>
+        <button
+          onClick={onMenuClick}
+          className={`p-2 hover:text-brand-red transition-colors lg:hidden active:scale-90 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}
+        >
+          <Menu size={20} />
+        </button>
+      </div>
+    </header>
+  );
+};
 
 const ProjectCard = ({ title, subtitle, tag, image, size = 'small' }: { title: string; subtitle: string; tag: string; image: string; size?: 'small' | 'large' }) => (
-  <motion.div 
+  <motion.div
     whileHover={{ scale: 1.01 }}
-    className={`relative group overflow-hidden bg-brand-surface rounded-none border-l-2 border-brand-red headlight-glow ${
-      size === 'large' ? 'col-span-1 md:col-span-8 h-[280px] sm:h-[350px] md:h-[450px]' : 'col-span-1 md:col-span-4 h-[280px] sm:h-[350px] md:h-[450px]'
-    }`}
+    className={`relative group overflow-hidden bg-brand-surface rounded-none border-l-2 border-brand-red headlight-glow ${size === 'large' ? 'col-span-1 md:col-span-8 h-[280px] sm:h-[350px] md:h-[450px]' : 'col-span-1 md:col-span-4 h-[280px] sm:h-[350px] md:h-[450px]'
+      }`}
   >
     <div className="carbon-pattern absolute inset-0 opacity-20 pointer-events-none" />
-    <img 
-      src={image} 
+    <img
+      src={image}
       alt={title}
       referrerPolicy="no-referrer"
       className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700 grayscale group-hover:grayscale-0"
     />
     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
-    
+
     <div className="relative h-full p-4 sm:p-6 md:p-8 flex flex-col justify-between z-10">
       <div>
         <div className="flex justify-between items-start mb-4 md:mb-6">
@@ -180,7 +179,7 @@ const ProjectCard = ({ title, subtitle, tag, image, size = 'small' }: { title: s
         <h3 className="font-headline text-2xl md:text-3xl font-black uppercase tracking-tight mb-2">{title}</h3>
         <p className="text-neutral-400 font-body text-xs md:text-sm max-w-xs">{subtitle}</p>
       </div>
-      
+
       <div className="flex items-center justify-between">
         <div className="flex gap-4 md:gap-6">
           <div>
@@ -352,7 +351,7 @@ const STORAGE_KEY = 'kdk_car_of_the_day';
 
 function getCarOfTheDay() {
   const todayStr = getTodayDateString();
-  
+
   // Check localStorage cache
   try {
     const cached = localStorage.getItem(STORAGE_KEY);
@@ -362,17 +361,17 @@ function getCarOfTheDay() {
         return parsed.car;
       }
     }
-  } catch {}
-  
+  } catch { }
+
   // Select car based on date hash
   const index = hashDateToIndex(todayStr, ICONIC_CARS.length);
   const car = ICONIC_CARS[index];
-  
+
   // Cache in localStorage
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayStr, car }));
-  } catch {}
-  
+  } catch { }
+
   return car;
 }
 
@@ -393,7 +392,7 @@ const CarOfTheDaySection = () => {
       }, msUntilMidnight + 1000); // +1 second buffer
       return timer;
     };
-    
+
     const timer = scheduleRefresh();
     return () => clearTimeout(timer);
   }, []);
@@ -416,8 +415,8 @@ const CarOfTheDaySection = () => {
             <div className="font-headline text-sm font-bold text-brand-red">{dateStr}</div>
           </div>
         </div>
-        
-        <motion.div 
+
+        <motion.div
           key={dateStr}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -458,7 +457,7 @@ const CarOfTheDaySection = () => {
                 </h5>
                 <p className="text-neutral-300 font-body leading-relaxed text-lg italic">"{car.story}"</p>
               </div>
-              
+
               <div className="space-y-8">
                 <div className="grid grid-cols-2 gap-6">
                   <div>
@@ -478,7 +477,7 @@ const CarOfTheDaySection = () => {
                     <div className="font-headline text-sm font-bold text-white uppercase">{car.engine}</div>
                   </div>
                 </div>
-                
+
                 <div className="w-full py-5 bg-white/5 border border-white/10 text-center">
                   <div className="font-headline text-[10px] font-bold uppercase tracking-widest text-neutral-500">
                     Gece yarısı yeni efsane gelecek
@@ -499,7 +498,7 @@ const DraftsSection = () => (
     <div className="max-w-5xl mx-auto w-full text-center">
       <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Tasarım_Kasası</h2>
       <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter mb-10 sm:mb-16">Projelerim</h3>
-      
+
       <div className="flex flex-col items-center justify-center py-20">
         <div className="relative mb-8">
           <div className="w-24 h-24 border-2 border-brand-red/30 rounded-full flex items-center justify-center">
@@ -532,7 +531,7 @@ const NewsSection = () => {
           responseMimeType: "application/json",
         }
       });
-      
+
       const data = JSON.parse(response.text);
       setNews(data);
     } catch (error) {
@@ -563,7 +562,7 @@ const NewsSection = () => {
             <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Sektörel_İstihbarat</h2>
             <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Otomobil_Haberleri</h3>
           </div>
-          <button 
+          <button
             onClick={fetchNews}
             disabled={loading}
             className="flex items-center gap-2 text-neutral-500 hover:text-brand-red transition-colors font-headline text-[10px] uppercase tracking-widest font-bold"
@@ -630,308 +629,305 @@ export default function App() {
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    try { localStorage.setItem('kdk_theme', newTheme); } catch {}
+    try { localStorage.setItem('kdk_theme', newTheme); } catch { }
   };
 
   const isDark = theme === 'dark';
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-    <div className={`min-h-screen transition-colors duration-500 selection:bg-brand-red selection:text-white ${
-      isDark ? 'bg-brand-dark text-neutral-200' : 'bg-neutral-100 text-neutral-900'
-    }`}>
-      <Header 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        onSettingsClick={() => setIsSettingsOpen(true)}
-        onMenuClick={() => setIsMobileMenuOpen(true)}
-      />
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] lg:hidden"
-          >
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+      <div className={`min-h-screen transition-colors duration-500 selection:bg-brand-red selection:text-white ${isDark ? 'bg-brand-dark text-neutral-200' : 'bg-neutral-100 text-neutral-900'
+        }`}>
+        <Header
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onSettingsClick={() => setIsSettingsOpen(true)}
+          onMenuClick={() => setIsMobileMenuOpen(true)}
+        />
+        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
             <motion.div
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="relative h-full w-64"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] lg:hidden"
             >
-              <Sidebar 
-                activeTab={activeTab} 
-                setActiveTab={setActiveTab} 
-                mobile 
-                onClose={() => setIsMobileMenuOpen(false)} 
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Settings Modal */}
-      <AnimatePresence>
-        {isSettingsOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] flex items-center justify-center p-4"
-          >
-            <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={() => setIsSettingsOpen(false)} />
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className={`relative border p-8 max-w-md w-full headlight-glow ${
-                isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-200 shadow-2xl'
-              }`}
-            >
-              <div className="flex justify-between items-center mb-8">
-                <h3 className={`font-headline text-2xl font-black uppercase tracking-tight ${isDark ? '' : 'text-neutral-900'}`}>Sistem_Ayarları</h3>
-                <button onClick={() => setIsSettingsOpen(false)} className={`${isDark ? 'text-neutral-500' : 'text-neutral-400'} hover:text-brand-red transition-colors`}>
-                  <RefreshCw size={20} className="rotate-45" />
-                </button>
-              </div>
-              
-              <div className="space-y-6">
-                {/* Tema Ayarı */}
-                <div>
-                  <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>Tema_Ayarı</h4>
-                  <div className={`flex items-center justify-between p-4 border rounded ${isDark ? 'border-white/10 bg-white/5' : 'border-neutral-200 bg-neutral-50'}`}>
-                    <div className="flex items-center gap-3">
-                      {isDark ? <Moon size={18} className="text-brand-red" /> : <Sun size={18} className="text-amber-500" />}
-                      <span className={`font-headline text-sm font-bold uppercase tracking-widest ${isDark ? 'text-white' : 'text-neutral-900'}`}>
-                        {isDark ? 'Koyu Mod' : 'Açık Mod'}
-                      </span>
-                    </div>
-                    <button 
-                      onClick={toggleTheme}
-                      className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
-                        isDark ? 'bg-brand-red' : 'bg-neutral-300'
-                      }`}
-                    >
-                      <motion.div 
-                        className="absolute top-1 w-5 h-5 bg-white rounded-full shadow-md"
-                        animate={{ left: isDark ? '2px' : '30px' }}
-                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Boş Alan - Gelecekte Kullanılacak */}
-                <div>
-                  <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>Diğer_Ayarlar</h4>
-                  <div className={`flex items-center justify-center p-8 border border-dashed rounded ${isDark ? 'border-white/10' : 'border-neutral-300'}`}>
-                    <span className={`font-headline text-[10px] uppercase tracking-widest font-bold ${isDark ? 'text-neutral-600' : 'text-neutral-400'}`}>Yakında_Eklenecek</span>
-                  </div>
-                </div>
-              </div>
-
-              <button 
-                onClick={() => setIsSettingsOpen(false)}
-                className="w-full mt-10 bg-brand-red text-white py-4 font-headline font-bold uppercase tracking-widest text-xs hover:brightness-110 transition-all"
+              <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+              <motion.div
+                initial={{ x: '-100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="relative h-full w-64"
               >
-                Arayüzü_Kapat
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      
-      <main className={`lg:ml-64 pt-16 sm:pt-20 ${isDark ? 'mechanical-grid' : ''}`}>
-        <AnimatePresence mode="wait">
-          {activeTab === 'News' && (
-            <motion.div
-              key="news"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              <NewsSection />
+                <Sidebar
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  mobile
+                  onClose={() => setIsMobileMenuOpen(false)}
+                />
+              </motion.div>
             </motion.div>
           )}
-          {activeTab === 'CarOfTheDay' && (
-            <motion.div
-              key="caroftheday"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              <CarOfTheDaySection />
-            </motion.div>
-          )}
-          {activeTab === 'Drafts' && (
-            <motion.div
-              key="drafts"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              <DraftsSection />
-            </motion.div>
-          )}
-          {activeTab === 'Dashboard' && (
-            <motion.div
-              key="dashboard"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              {/* Hero Section */}
-        <section className="relative min-h-[80vh] flex items-center px-4 sm:px-8 md:px-16 overflow-hidden carbon-pattern">
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-             <div className="absolute top-1/4 right-1/4 w-96 h-96 border-[12px] border-brand-red/30 rounded-full animate-pulse" />
-             <div className="absolute bottom-1/4 left-1/4 w-64 h-64 border-[8px] border-brand-red/20 rounded-full animate-bounce" />
-          </div>
-          
-          <div className="relative z-10 max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <h1 className="font-headline text-3xl sm:text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter leading-none mb-4 sm:mb-6">
-                KDK AUTO <span className="text-brand-red">1864</span><br />
-                MÜHENDİSLİK
-              </h1>
-              <p className="font-body text-sm sm:text-base md:text-xl text-neutral-400 max-w-2xl mb-6 sm:mb-12 leading-relaxed">
-                Mekanik hassasiyetin ham kinetik enerjiyle buluştuğu yer. Yarış dünyasının yeni dönemi için yüksek performanslı içten yanmalı sistemler ve aerodinamik şasiler tasarlıyoruz.
-              </p>
-              
-              <div className="flex flex-wrap gap-6">
-                <button className="bg-brand-red text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95">
-                  Sistemi Başlat
-                </button>
-                <button className="border border-white/10 text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:bg-white/5 transition-all headlight-glow active:scale-95">
-                  Taslakları Görüntüle
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+        </AnimatePresence>
 
-        {/* Projects Section */}
-        <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 bg-neutral-950">
-          <div className="mb-16">
-            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Son_Montajlar</h2>
-            <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Mevcut_Projeler</h3>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
-            <ProjectCard 
-              size="large"
-              title="Proje: Spectre-7"
-              subtitle="Entegre termal yayılım tünellerine sahip devrim niteliğinde aktif aero şasi."
-              tag="Aero-Odaklı"
-              image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1920"
-            />
-            <ProjectCard 
-              title="Ünite_04: Giriş"
-              subtitle="Yüksek basınçlı indüksiyon sistemleri için karbon fiber akış analizi."
-              tag="İtici Güç"
-              image="https://images.unsplash.com/photo-1486497395442-885e218f2467?auto=format&fit=crop&q=80&w=800"
-            />
-            <ProjectCard 
-              title="Titan_Ocağı"
-              subtitle="Dövme titanyum iç bileşenler için stres testi telemetrisi."
-              tag="Dinamikler"
-              image="https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=800"
-            />
-            <ProjectCard 
-              size="large"
-              title="Hiper-Yanma"
-              subtitle="Maksimum RPM'de %98 termal verimlilik için patentli ateşleme dizilimi."
-              tag="İtici Güç"
-              image="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1920"
-            />
-          </div>
-        </section>
+        {/* Settings Modal */}
+        <AnimatePresence>
+          {isSettingsOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[70] flex items-center justify-center p-4"
+            >
+              <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={() => setIsSettingsOpen(false)} />
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                className={`relative border p-8 max-w-md w-full headlight-glow ${isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-200 shadow-2xl'
+                  }`}
+              >
+                <div className="flex justify-between items-center mb-8">
+                  <h3 className={`font-headline text-2xl font-black uppercase tracking-tight ${isDark ? '' : 'text-neutral-900'}`}>Sistem_Ayarları</h3>
+                  <button onClick={() => setIsSettingsOpen(false)} className={`${isDark ? 'text-neutral-500' : 'text-neutral-400'} hover:text-brand-red transition-colors`}>
+                    <RefreshCw size={20} className="rotate-45" />
+                  </button>
+                </div>
 
-        {/* Technical Insights */}
-        <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-10 sm:gap-16 md:gap-20 items-center">
-            <div className="flex-1 space-y-12">
-              <h2 className="font-headline text-3xl sm:text-5xl md:text-6xl font-black italic tracking-tighter uppercase">Teknik_İncelemeler</h2>
-              
-              <div className="space-y-10">
-                {[
-                  { icon: Bolt, title: 'Hiper-Yanma', desc: 'Patentli ateşleme dizilimi ile %98 termal verimlilik.' },
-                  { icon: Gauge, title: 'Kinetik Geri Kazanım', desc: 'Döngü başına 400kJ geri dönüştüren rejeneratif fren sistemleri.' },
-                  { icon: LayoutGrid, title: 'Modüler Åasi', desc: 'Çeşitli koşullar için değiştirilebilir süspansiyon geometrileri.' }
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-4 sm:gap-8 items-start group">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brand-red flex items-center justify-center rounded-none shrink-0 group-hover:scale-110 transition-transform">
-                      <item.icon size={24} className="text-white" />
-                    </div>
-                    <div>
-                      <h5 className="font-headline font-bold text-xl mb-2 uppercase tracking-tight">{item.title}</h5>
-                      <p className="text-neutral-400 font-body leading-relaxed">{item.desc}</p>
+                <div className="space-y-6">
+                  {/* Tema Ayarı */}
+                  <div>
+                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>Tema_Ayarı</h4>
+                    <div className={`flex items-center justify-between p-4 border rounded ${isDark ? 'border-white/10 bg-white/5' : 'border-neutral-200 bg-neutral-50'}`}>
+                      <div className="flex items-center gap-3">
+                        {isDark ? <Moon size={18} className="text-brand-red" /> : <Sun size={18} className="text-amber-500" />}
+                        <span className={`font-headline text-sm font-bold uppercase tracking-widest ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+                          {isDark ? 'Koyu Mod' : 'Açık Mod'}
+                        </span>
+                      </div>
+                      <button
+                        onClick={toggleTheme}
+                        className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${isDark ? 'bg-brand-red' : 'bg-neutral-300'
+                          }`}
+                      >
+                        <motion.div
+                          className="absolute top-1 w-5 h-5 bg-white rounded-full shadow-md"
+                          animate={{ left: isDark ? '2px' : '30px' }}
+                          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                        />
+                      </button>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-            
-            <div className="flex-1 relative">
-              <div className="aspect-square bg-gradient-to-br from-brand-red/20 to-black p-1 border border-white/5 relative group">
-                <img 
-                  src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=1000" 
-                  alt="Engine Detail"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
-                />
-                <div className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 bg-brand-red px-3 py-1 sm:px-6 sm:py-2 text-white font-headline text-[8px] sm:text-[10px] font-bold tracking-widest">
-                  V8-YAPILANDIRMA_YÜKLENDİ
+
+                  {/* Boş Alan - Gelecekte Kullanılacak */}
+                  <div>
+                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>Diğer_Ayarlar</h4>
+                    <div className={`flex items-center justify-center p-8 border border-dashed rounded ${isDark ? 'border-white/10' : 'border-neutral-300'}`}>
+                      <span className={`font-headline text-[10px] uppercase tracking-widest font-bold ${isDark ? 'text-neutral-600' : 'text-neutral-400'}`}>Yakında_Eklenecek</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="w-full mt-10 bg-brand-red text-white py-4 font-headline font-bold uppercase tracking-widest text-xs hover:brightness-110 transition-all"
+                >
+                  Arayüzü_Kapat
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <main className={`lg:ml-64 pt-16 sm:pt-20 ${isDark ? 'mechanical-grid' : ''}`}>
+          <AnimatePresence mode="wait">
+            {activeTab === 'News' && (
+              <motion.div
+                key="news"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <NewsSection />
+              </motion.div>
+            )}
+            {activeTab === 'CarOfTheDay' && (
+              <motion.div
+                key="caroftheday"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <CarOfTheDaySection />
+              </motion.div>
+            )}
+            {activeTab === 'Drafts' && (
+              <motion.div
+                key="drafts"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <DraftsSection />
+              </motion.div>
+            )}
+            {activeTab === 'Dashboard' && (
+              <motion.div
+                key="dashboard"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                {/* Hero Section */}
+                <section className="relative min-h-[80vh] flex items-center px-4 sm:px-8 md:px-16 overflow-hidden carbon-pattern">
+                  <div className="absolute inset-0 opacity-10 pointer-events-none">
+                    <div className="absolute top-1/4 right-1/4 w-96 h-96 border-[12px] border-brand-red/30 rounded-full animate-pulse" />
+                    <div className="absolute bottom-1/4 left-1/4 w-64 h-64 border-[8px] border-brand-red/20 rounded-full animate-bounce" />
+                  </div>
+
+                  <div className="relative z-10 max-w-4xl">
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
+                    >
+                      <h1 className="font-headline text-3xl sm:text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter leading-none mb-4 sm:mb-6">
+                        KDK AUTO <span className="text-brand-red">1864</span><br />
+                        MÜHENDİSLİK
+                      </h1>
+                      <p className="font-body text-sm sm:text-base md:text-xl text-neutral-400 max-w-2xl mb-6 sm:mb-12 leading-relaxed">
+                        Mekanik hassasiyetin ham kinetik enerjiyle buluştuğu yer. Yarış dünyasının yeni dönemi için yüksek performanslı içten yanmalı sistemler ve aerodinamik şasiler tasarlıyoruz.
+                      </p>
+
+                      <div className="flex flex-wrap gap-6">
+                        <button className="bg-brand-red text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95">
+                          Sistemi Başlat
+                        </button>
+                        <button className="border border-white/10 text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:bg-white/5 transition-all headlight-glow active:scale-95">
+                          Taslakları Görüntüle
+                        </button>
+                      </div>
+                    </motion.div>
+                  </div>
+                </section>
+
+                {/* Projects Section */}
+                <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 bg-neutral-950">
+                  <div className="mb-16">
+                    <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Son_Montajlar</h2>
+                    <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Mevcut_Projeler</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
+                    <ProjectCard
+                      size="large"
+                      title="Proje: Spectre-7"
+                      subtitle="Entegre termal yayılım tünellerine sahip devrim niteliğinde aktif aero şasi."
+                      tag="Aero-Odaklı"
+                      image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1920"
+                    />
+                    <ProjectCard
+                      title="Ünite_04: Giriş"
+                      subtitle="Yüksek basınçlı indüksiyon sistemleri için karbon fiber akış analizi."
+                      tag="İtici Güç"
+                      image="https://images.unsplash.com/photo-1486497395442-885e218f2467?auto=format&fit=crop&q=80&w=800"
+                    />
+                    <ProjectCard
+                      title="Titan_Ocağı"
+                      subtitle="Dövme titanyum iç bileşenler için stres testi telemetrisi."
+                      tag="Dinamikler"
+                      image="https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=800"
+                    />
+                    <ProjectCard
+                      size="large"
+                      title="Hiper-Yanma"
+                      subtitle="Maksimum RPM'de %98 termal verimlilik için patentli ateşleme dizilimi."
+                      tag="İtici Güç"
+                      image="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1920"
+                    />
+                  </div>
+                </section>
+
+                {/* Technical Insights */}
+                <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern">
+                  <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-10 sm:gap-16 md:gap-20 items-center">
+                    <div className="flex-1 space-y-12">
+                      <h2 className="font-headline text-3xl sm:text-5xl md:text-6xl font-black italic tracking-tighter uppercase">Teknik_İncelemeler</h2>
+
+                      <div className="space-y-10">
+                        {[
+                          { icon: Bolt, title: 'Hiper-Yanma', desc: 'Patentli ateşleme dizilimi ile %98 termal verimlilik.' },
+                          { icon: Gauge, title: 'Kinetik Geri Kazanım', desc: 'Döngü başına 400kJ geri dönüştüren rejeneratif fren sistemleri.' },
+                          { icon: LayoutGrid, title: 'Modüler Åasi', desc: 'Çeşitli koşullar için değiştirilebilir süspansiyon geometrileri.' }
+                        ].map((item, i) => (
+                          <div key={i} className="flex gap-4 sm:gap-8 items-start group">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brand-red flex items-center justify-center rounded-none shrink-0 group-hover:scale-110 transition-transform">
+                              <item.icon size={24} className="text-white" />
+                            </div>
+                            <div>
+                              <h5 className="font-headline font-bold text-xl mb-2 uppercase tracking-tight">{item.title}</h5>
+                              <p className="text-neutral-400 font-body leading-relaxed">{item.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex-1 relative">
+                      <div className="aspect-square bg-gradient-to-br from-brand-red/20 to-black p-1 border border-white/5 relative group">
+                        <img
+                          src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=1000"
+                          alt="Engine Detail"
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
+                        />
+                        <div className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 bg-brand-red px-3 py-1 sm:px-6 sm:py-2 text-white font-headline text-[8px] sm:text-[10px] font-bold tracking-widest">
+                          V8-YAPILANDIRMA_YÜKLENDİ
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Footer */}
+          <footer className={`py-10 sm:py-16 px-4 sm:px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950 border-t border-white/5' : 'bg-white border-t border-neutral-200'}`}>
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+              <div className="space-y-2 text-center md:text-left">
+                <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-600">
+                  ©2024 KDK AUTO 1864. TÜM ÖZELLİKLER DOÄRULANDI.
+                </div>
+                <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-brand-red font-bold">
+                  Sertifikalı Performans_Mimarı
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-      </motion.div>
-    )}
-  </AnimatePresence>
 
-        {/* Footer */}
-        <footer className={`py-10 sm:py-16 px-4 sm:px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950 border-t border-white/5' : 'bg-white border-t border-neutral-200'}`}>
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
-            <div className="space-y-2 text-center md:text-left">
-              <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-600">
-                ©2024 KDK AUTO 1864. TÜM ÖZELLİKLER DOÄRULANDI.
-              </div>
-              <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-brand-red font-bold">
-                Sertifikalı Performans_Mimarı
+              <nav className="flex gap-4 sm:gap-6 md:gap-10">
+                {[
+                  { label: 'Kılavuzlar', id: 'Manuals' },
+                  { label: 'Terminoloji', id: 'Terminology' },
+                  { label: 'Gizlilik', id: 'Privacy' }
+                ].map(item => (
+                  <a key={item.id} href="#" className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-500 hover:text-brand-red transition-colors">
+                    {item.label}
+                  </a>
+                ))}
+              </nav>
+
+              <div className="flex gap-6">
+                <Globe size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
+                <Share2 size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
               </div>
             </div>
-            
-            <nav className="flex gap-4 sm:gap-6 md:gap-10">
-              {[
-                { label: 'Kılavuzlar', id: 'Manuals' },
-                { label: 'Terminoloji', id: 'Terminology' },
-                { label: 'Gizlilik', id: 'Privacy' }
-              ].map(item => (
-                <a key={item.id} href="#" className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-500 hover:text-brand-red transition-colors">
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-            
-            <div className="flex gap-6">
-              <Globe size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
-              <Share2 size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
-            </div>
-          </div>
-        </footer>
-      </main>
-    </div>
+          </footer>
+        </main>
+      </div>
     </ThemeContext.Provider>
   );
 }
