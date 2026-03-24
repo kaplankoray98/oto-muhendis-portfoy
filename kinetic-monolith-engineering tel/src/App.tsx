@@ -17,6 +17,8 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
+import { Analytics } from "@vercel/analytics/react";
+
 
 // --- Components ---
 
@@ -739,6 +741,7 @@ export default function App() {
           </div>
         </footer>
       </main>
+      <Analytics />
     </div>
   );
 }
