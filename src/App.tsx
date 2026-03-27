@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Settings,
@@ -164,6 +164,7 @@ const ProjectCard = ({ title, subtitle, tag, image, size = 'small' }: { title: s
       src={image}
       alt={title}
       referrerPolicy="no-referrer"
+      onError={(e) => { (e.target as HTMLImageElement).src = getPlaceholderUrl(title); }}
       className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700 grayscale group-hover:grayscale-0"
     />
     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
@@ -324,6 +325,12 @@ const ICONIC_CARS = [
   },
 ];
 
+// Placeholder image URL generator for broken/missing images
+function getPlaceholderUrl(text: string, width = 800, height = 600): string {
+  const encoded = encodeURIComponent(text.trim());
+  return `https://placehold.co/${width}x${height}/1a1a1a/ffffff?text=${encoded}&font=montserrat`;
+}
+
 // Date-based deterministic car selection
 function getTodayDateString(): string {
   const now = new Date();
@@ -425,13 +432,13 @@ const CarOfTheDaySection = () => {
           {/* Image Comparison - First Model vs Latest Model */}
           <div className="grid grid-cols-1 md:grid-cols-2 border-b border-white/10">
             <div className="relative group overflow-hidden h-[220px] sm:h-[300px] md:h-[400px]">
-              <img src={car.oldImage} alt="Classic" referrerPolicy="no-referrer" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+              <img src={car.oldImage} alt="Classic" referrerPolicy="no-referrer" onError={(e) => { (e.target as HTMLImageElement).src = getPlaceholderUrl(car.brand + ' ' + car.name + ' İlk Model'); }} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
               <div className="absolute top-4 left-4 bg-black/80 px-4 py-1 text-[10px] font-headline font-bold tracking-widest text-white border border-white/10">
                 İLK_MODEL
               </div>
             </div>
             <div className="relative group overflow-hidden h-[220px] sm:h-[300px] md:h-[400px] border-t md:border-t-0 md:border-l border-white/10">
-              <img src={car.newImage} alt="Modern" referrerPolicy="no-referrer" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+              <img src={car.newImage} alt="Modern" referrerPolicy="no-referrer" onError={(e) => { (e.target as HTMLImageElement).src = getPlaceholderUrl(car.brand + ' ' + car.name + ' Son Model'); }} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
               <div className="absolute top-4 right-4 bg-brand-red px-4 py-1 text-[10px] font-headline font-bold tracking-widest text-white">
                 SON_MODEL
               </div>
@@ -615,6 +622,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNavModalOpen, setIsNavModalOpen] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     try {
       return (localStorage.getItem('kdk_theme') as 'dark' | 'light') || 'dark';
@@ -743,6 +751,76 @@ export default function App() {
           )}
         </AnimatePresence>
 
+        {/* Navigation Modal */}
+        <AnimatePresence>
+          {isNavModalOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[80] flex items-center justify-center p-4"
+            >
+              <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsNavModalOpen(false)} />
+              <motion.div
+                initial={{ scale: 0.85, opacity: 0, y: 30 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.85, opacity: 0, y: 30 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className={`relative border p-8 sm:p-10 max-w-lg w-full headlight-glow ${isDark ? 'bg-neutral-900/95 border-white/10' : 'bg-white/95 border-neutral-200 shadow-2xl'}`}
+              >
+                <div className="flex justify-between items-center mb-10">
+                  <h3 className={`font-headline text-2xl font-black uppercase tracking-tight ${isDark ? '' : 'text-neutral-900'}`}>Navigasyon</h3>
+                  <button onClick={() => setIsNavModalOpen(false)} className={`${isDark ? 'text-neutral-500' : 'text-neutral-400'} hover:text-brand-red transition-colors`}>
+                    <RefreshCw size={20} className="rotate-45" />
+                  </button>
+                </div>
+
+                <nav className="flex flex-col gap-2">
+                  {[
+                    { id: 'Dashboard', label: 'Anasayfa', icon: LayoutGrid },
+                    { id: 'Drafts', label: 'Projelerim', icon: PenTool },
+                    { id: 'CarOfTheDay', label: 'Günün Arabası', icon: Star },
+                    { id: 'News', label: 'Otomotiv Haberleri', icon: Newspaper },
+                  ].map((item) => (
+                    <motion.button
+                      key={item.id}
+                      whileHover={{ x: 8 }}
+                      onClick={() => {
+                        setActiveTab(item.id);
+                        setIsNavModalOpen(false);
+                      }}
+                      className={`flex items-center gap-4 px-6 py-5 border transition-all duration-300 group ${
+                        activeTab === item.id
+                          ? (isDark ? 'border-brand-red/50 bg-brand-red/10 text-white' : 'border-brand-red/50 bg-brand-red/10 text-neutral-900')
+                          : (isDark ? 'border-white/5 hover:border-brand-red/30 hover:bg-white/5 text-neutral-400 hover:text-white' : 'border-neutral-200 hover:border-brand-red/30 hover:bg-neutral-50 text-neutral-500 hover:text-neutral-900')
+                      }`}
+                    >
+                      <div className={`w-10 h-10 flex items-center justify-center ${
+                        activeTab === item.id ? 'bg-brand-red' : (isDark ? 'bg-white/5' : 'bg-neutral-100')
+                      }`}>
+                        <item.icon size={18} className={activeTab === item.id ? 'text-white' : 'text-brand-red'} />
+                      </div>
+                      <span className="font-headline uppercase text-[11px] tracking-widest font-bold">
+                        {item.label}
+                      </span>
+                      <ChevronRight size={14} className={`ml-auto transition-colors ${
+                        activeTab === item.id ? 'text-brand-red' : (isDark ? 'text-neutral-700 group-hover:text-brand-red' : 'text-neutral-300 group-hover:text-brand-red')
+                      }`} />
+                    </motion.button>
+                  ))}
+                </nav>
+
+                <button
+                  onClick={() => setIsNavModalOpen(false)}
+                  className="w-full mt-8 bg-brand-red text-white py-4 font-headline font-bold uppercase tracking-widest text-xs hover:brightness-110 transition-all"
+                >
+                  Kapat
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <main className={`lg:ml-64 pt-16 sm:pt-20 ${isDark ? 'mechanical-grid' : ''}`}>
           <AnimatePresence mode="wait">
             {activeTab === 'News' && (
@@ -804,11 +882,11 @@ export default function App() {
                       </p>
 
                       <div className="flex flex-wrap gap-6">
-                        <button className="bg-brand-red text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95">
+                        <button
+                          onClick={() => setIsNavModalOpen(true)}
+                          className="bg-brand-red text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95"
+                        >
                           Sistemi Başlat
-                        </button>
-                        <button className="border border-white/10 text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:bg-white/5 transition-all headlight-glow active:scale-95">
-                          Taslakları Görüntüle
                         </button>
                       </div>
                     </motion.div>
