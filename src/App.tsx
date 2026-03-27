@@ -643,6 +643,27 @@ export default function App() {
 
   const isDark = theme === 'dark';
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'KDK AUTO 1864',
+          text: 'Otomotiv dünyası ve mühendislik projelerine göz at!',
+          url: window.location.href,
+        });
+      } catch (err) {
+        // User cancelled or error
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Sitenin linki başarıyla kopyalandı!');
+      } catch {
+        alert('Link kopyalanamadı.');
+      }
+    }
+  };
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <div className={`min-h-screen transition-colors duration-500 selection:bg-brand-red selection:text-white ${isDark ? 'bg-brand-dark text-neutral-200' : 'bg-neutral-100 text-neutral-900'
@@ -1001,7 +1022,9 @@ export default function App() {
 
               <div className="flex gap-6 items-center">
                 <Globe size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
-                <Share2 size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
+                <button onClick={handleShare} className="text-neutral-600 hover:text-brand-red hover:scale-110 cursor-pointer transition-all duration-300">
+                  <Share2 size={18} />
+                </button>
                 <a href="https://www.instagram.com/auto_car_1864/" target="_blank" rel="noopener noreferrer" className="text-neutral-600 hover:text-brand-red hover:scale-110 cursor-pointer transition-all duration-300">
                   <Instagram size={18} />
                 </a>
