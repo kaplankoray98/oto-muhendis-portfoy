@@ -16,7 +16,8 @@ import {
   Newspaper,
   RefreshCw,
   Sun,
-  Moon
+  Moon,
+  Instagram
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
@@ -979,7 +980,7 @@ export default function App() {
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
               <div className="space-y-2 text-center md:text-left">
                 <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-600">
-                  ©2024 KDK AUTO 1864. TÜM ÖZELLİKLER DOÄRULANDI.
+                  ©2026 KDK AUTO 1864. TÜM ÖZELLİKLER DOĞRULANDI.
                 </div>
                 <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-brand-red font-bold">
                   Sertifikalı Performans_Mimarı
@@ -998,9 +999,12 @@ export default function App() {
                 ))}
               </nav>
 
-              <div className="flex gap-6">
+              <div className="flex gap-6 items-center">
                 <Globe size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
                 <Share2 size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
+                <a href="https://www.instagram.com/auto_car_1864/" target="_blank" rel="noopener noreferrer" className="text-neutral-600 hover:text-brand-red hover:scale-110 cursor-pointer transition-all duration-300">
+                  <Instagram size={18} />
+                </a>
               </div>
             </div>
           </footer>
