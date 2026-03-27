@@ -17,7 +17,10 @@ import {
   RefreshCw,
   Sun,
   Moon,
-  Instagram
+  Instagram,
+  X,
+  Upload,
+  Mail
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
@@ -163,10 +166,11 @@ const Header = ({ onSettingsClick, onMenuClick, onShareClick, activeTab, setActi
   );
 };
 
-const ProjectCard = ({ title, subtitle, tag, image, size = 'small' }: { title: string; subtitle: string; tag: string; image: string; size?: 'small' | 'large' }) => (
+const ProjectCard = ({ title, subtitle, tag, image, size = 'small', onClick }: { title: string; subtitle: string; tag: string; image: string; size?: 'small' | 'large'; onClick?: () => void }) => (
   <motion.div
     whileHover={{ scale: 1.01 }}
-    className={`relative group overflow-hidden bg-brand-surface rounded-none border-l-2 border-brand-red headlight-glow ${size === 'large' ? 'col-span-1 md:col-span-8 h-[280px] sm:h-[350px] md:h-[450px]' : 'col-span-1 md:col-span-4 h-[280px] sm:h-[350px] md:h-[450px]'
+    onClick={onClick}
+    className={`relative group overflow-hidden bg-brand-surface rounded-none border-l-2 border-brand-red headlight-glow cursor-pointer ${size === 'large' ? 'col-span-1 md:col-span-8 h-[280px] sm:h-[350px] md:h-[450px]' : 'col-span-1 md:col-span-4 h-[280px] sm:h-[350px] md:h-[450px]'
       }`}
   >
     <div className="carbon-pattern absolute inset-0 opacity-20 pointer-events-none" />
@@ -510,23 +514,45 @@ const CarOfTheDaySection = () => {
 };
 
 
-const DraftsSection = () => (
-  <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern min-h-screen flex items-center">
-    <div className="max-w-5xl mx-auto w-full text-center">
-      <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Tasarım Kasası</h2>
-      <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter mb-10 sm:mb-16">Projelerim</h3>
+const DraftsSection = ({ onProjectClick }: { onProjectClick: (project: { title: string; tag: string }) => void }) => (
+  <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern min-h-screen">
+    <div className="max-w-5xl mx-auto w-full">
+      <div className="mb-10 sm:mb-16">
+        <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Tasarım Kasası</h2>
+        <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Projelerim</h3>
+      </div>
 
-      <div className="flex flex-col items-center justify-center py-20">
-        <div className="relative mb-8">
-          <div className="w-24 h-24 border-2 border-brand-red/30 rounded-full flex items-center justify-center">
-            <PenTool size={36} className="text-brand-red" />
-          </div>
-          <div className="absolute inset-0 border-2 border-brand-red/10 rounded-full animate-ping" />
-        </div>
-        <h4 className="font-headline text-2xl sm:text-4xl font-black uppercase tracking-tight mb-4">Pek Yakında</h4>
-        <p className="font-headline text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-bold">
-          Projeler Hazırlanıyor // Yakında Burada
-        </p>
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
+        <ProjectCard
+          size="large"
+          title="Proje: Spectre-7"
+          subtitle="Entegre termal yayılım tünellerine sahip devrim niteşliğinde aktif aero şasi."
+          tag="Aero-Odaklı"
+          image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1920"
+          onClick={() => onProjectClick({ title: 'Proje: Spectre-7', tag: 'Aero-Odaklı' })}
+        />
+        <ProjectCard
+          title="Ünite 04: Giriş"
+          subtitle="Yüksek basınçlı indüksiyon sistemleri için karbon fiber akış analizi."
+          tag="İtici Güç"
+          image="https://images.unsplash.com/photo-1486497395442-885e218f2467?auto=format&fit=crop&q=80&w=800"
+          onClick={() => onProjectClick({ title: 'Ünite 04: Giriş', tag: 'İtici Güç' })}
+        />
+        <ProjectCard
+          title="Titan Ocağı"
+          subtitle="Dövme titanyum iç bileşenler için stres testi telemetrisi."
+          tag="Dinamikler"
+          image="https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=800"
+          onClick={() => onProjectClick({ title: 'Titan Ocağı', tag: 'Dinamikler' })}
+        />
+        <ProjectCard
+          size="large"
+          title="Hiper-Yanma"
+          subtitle="Maksimum RPM'de %98 termal verimlilik için patentli ateşleme dizilimi."
+          tag="İtici Güç"
+          image="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1920"
+          onClick={() => onProjectClick({ title: 'Hiper-Yanma', tag: 'İtici Güç' })}
+        />
       </div>
     </div>
   </section>
@@ -633,6 +659,9 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNavModalOpen, setIsNavModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<{ title: string; tag: string } | null>(null);
+  const [formEmail, setFormEmail] = useState('');
+  const [formFiles, setFormFiles] = useState<FileList | null>(null);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     try {
       return (localStorage.getItem('kdk_theme') as 'dark' | 'light') || 'dark';
@@ -853,6 +882,67 @@ export default function App() {
           )}
         </AnimatePresence>
 
+        {/* Project Detail Modal */}
+        <AnimatePresence>
+          {selectedProject && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[90] flex items-center justify-center p-4"
+            >
+              <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={() => setSelectedProject(null)} />
+              <motion.div
+                initial={{ scale: 0.85, opacity: 0, y: 30 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.85, opacity: 0, y: 30 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className={`relative border p-8 sm:p-12 max-w-md w-full text-center ${isDark ? 'bg-neutral-900/95 border-white/10' : 'bg-white/95 border-neutral-200 shadow-2xl'}`}
+              >
+                {/* Close button */}
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className={`absolute top-4 right-4 p-2 hover:text-brand-red transition-colors ${isDark ? 'text-neutral-500' : 'text-neutral-400'}`}
+                >
+                  <X size={20} />
+                </button>
+
+                {/* Tag */}
+                <span className="inline-block bg-brand-red/20 text-brand-red font-headline text-[10px] px-4 py-1 rounded-full uppercase tracking-widest font-bold mb-6">
+                  {selectedProject.tag}
+                </span>
+
+                {/* Title */}
+                <h3 className={`font-headline text-2xl sm:text-3xl font-black uppercase tracking-tight mb-8 ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+                  {selectedProject.title}
+                </h3>
+
+                {/* Yakında... */}
+                <div className="mb-8">
+                  <p className={`font-headline text-4xl sm:text-5xl font-black uppercase italic tracking-tighter ${isDark ? 'text-white/20' : 'text-neutral-200'}`}>
+                    YAKINDA...
+                  </p>
+                </div>
+
+                {/* Spinning Cog */}
+                <div className="flex justify-center mb-10">
+                  <div className="w-16 h-16 border-2 border-brand-red/30 rounded-full flex items-center justify-center">
+                    <Cog size={28} className="text-brand-red animate-spin" style={{ animationDuration: '3s' }} />
+                  </div>
+                </div>
+
+                {/* Disabled Button */}
+                <button
+                  onClick={() => alert('Hazırlanıyor...')}
+                  className={`w-full py-4 font-headline font-bold uppercase tracking-widest text-xs transition-all ${isDark ? 'bg-white/5 border border-white/10 text-neutral-500 hover:bg-white/10' : 'bg-neutral-100 border border-neutral-200 text-neutral-400 hover:bg-neutral-200'}`}
+                >
+                  Projeyi Gör
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <main className={`lg:ml-64 pt-16 sm:pt-20 ${isDark ? 'mechanical-grid' : ''}`}>
           <AnimatePresence mode="wait">
             {activeTab === 'News' && (
@@ -882,7 +972,7 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
-                <DraftsSection />
+                <DraftsSection onProjectClick={(p) => setSelectedProject(p)} />
               </motion.div>
             )}
             {activeTab === 'Dashboard' && (
@@ -939,18 +1029,21 @@ export default function App() {
                       subtitle="Entegre termal yayılım tünellerine sahip devrim niteliğinde aktif aero şasi."
                       tag="Aero-Odaklı"
                       image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1920"
+                      onClick={() => setSelectedProject({ title: 'Proje: Spectre-7', tag: 'Aero-Odaklı' })}
                     />
                     <ProjectCard
                       title="Ünite 04: Giriş"
                       subtitle="Yüksek basınçlı indüksiyon sistemleri için karbon fiber akış analizi."
                       tag="İtici Güç"
                       image="https://images.unsplash.com/photo-1486497395442-885e218f2467?auto=format&fit=crop&q=80&w=800"
+                      onClick={() => setSelectedProject({ title: 'Ünite 04: Giriş', tag: 'İtici Güç' })}
                     />
                     <ProjectCard
                       title="Titan Ocağı"
                       subtitle="Dövme titanyum iç bileşenler için stres testi telemetrisi."
                       tag="Dinamikler"
                       image="https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=800"
+                      onClick={() => setSelectedProject({ title: 'Titan Ocağı', tag: 'Dinamikler' })}
                     />
                     <ProjectCard
                       size="large"
@@ -958,6 +1051,7 @@ export default function App() {
                       subtitle="Maksimum RPM'de %98 termal verimlilik için patentli ateşleme dizilimi."
                       tag="İtici Güç"
                       image="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1920"
+                      onClick={() => setSelectedProject({ title: 'Hiper-Yanma', tag: 'İtici Güç' })}
                     />
                   </div>
                 </section>
@@ -1000,6 +1094,75 @@ export default function App() {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </section>
+
+                {/* Projelerini Benimle Paylaş Form */}
+                <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 bg-neutral-950">
+                  <div className="max-w-3xl mx-auto">
+                    <div className="mb-10 sm:mb-16">
+                      <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">İletişim</h2>
+                      <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Projelerini Benimle Paylaş</h3>
+                      <p className="text-neutral-400 font-body mt-4 text-sm sm:text-base max-w-xl">Otomotiv projelerini, tasarımlarını veya fikirlerini benimle paylaş. Dosyalarını yükle, birlikte değerlendirelim.</p>
+                    </div>
+
+                    <form
+                      action="https://app.forminit.com/f/kf0e0fhmlgd"
+                      method="POST"
+                      encType="multipart/form-data"
+                      className="space-y-6 border border-white/10 p-6 sm:p-10 bg-neutral-900/50 headlight-glow"
+                    >
+                      {/* Email */}
+                      <div>
+                        <label className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-3 flex items-center gap-2">
+                          <Mail size={14} className="text-brand-red" /> E-Posta Adresin
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          required
+                          placeholder="ornek@email.com"
+                          className="w-full bg-black/50 border border-white/10 px-5 py-4 text-white font-body text-sm placeholder-neutral-600 focus:border-brand-red focus:outline-none transition-colors"
+                        />
+                      </div>
+
+                      {/* Message */}
+                      <div>
+                        <label className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-3 flex items-center gap-2">
+                          <PenTool size={14} className="text-brand-red" /> Proje Özeti
+                        </label>
+                        <textarea
+                          name="message"
+                          rows={4}
+                          placeholder="Projeni kısaca anlat..."
+                          className="w-full bg-black/50 border border-white/10 px-5 py-4 text-white font-body text-sm placeholder-neutral-600 focus:border-brand-red focus:outline-none transition-colors resize-none"
+                        />
+                      </div>
+
+                      {/* File Upload */}
+                      <div>
+                        <label className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-3 flex items-center gap-2">
+                          <Upload size={14} className="text-brand-red" /> Dosya Yükle (PDF / Görsel)
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="file"
+                            name="attachment"
+                            multiple
+                            accept=".pdf,image/*"
+                            className="w-full bg-black/50 border border-dashed border-white/10 px-5 py-8 text-neutral-400 font-body text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:bg-brand-red file:text-white file:font-headline file:text-[10px] file:uppercase file:tracking-widest file:font-bold file:cursor-pointer hover:border-brand-red/30 transition-colors"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Submit */}
+                      <button
+                        type="submit"
+                        className="w-full bg-brand-red text-white py-5 font-headline font-bold uppercase tracking-[0.2em] text-xs hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95"
+                      >
+                        Gönder
+                      </button>
+                    </form>
                   </div>
                 </section>
               </motion.div>
