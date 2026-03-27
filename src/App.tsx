@@ -113,36 +113,45 @@ const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: stri
   );
 };
 
-const Header = ({ onSettingsClick, onMenuClick, activeTab, setActiveTab }: {
+const Header = ({ onSettingsClick, onMenuClick, onShareClick, activeTab, setActiveTab }: {
   onSettingsClick: () => void,
   onMenuClick: () => void,
+  onShareClick: () => void,
   activeTab: string,
   setActiveTab: (id: string) => void
 }) => {
   const { theme } = useContext(ThemeContext);
   const isDark = theme === 'dark';
   return (
-    <header className={`backdrop-blur-md fixed top-0 left-0 right-0 h-16 sm:h-20 z-50 flex justify-between items-center px-4 sm:px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950/80 border-b border-white/5' : 'bg-white/80 border-b border-neutral-200'}`}>
-      <div className="flex-1 lg:hidden" /> {/* Spacer for mobile menu alignment if needed */}
+    <header className={`backdrop-blur-md fixed top-0 left-0 right-0 h-16 sm:h-20 z-50 flex items-center justify-center px-4 sm:px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950/80 border-b border-white/5' : 'bg-white/80 border-b border-neutral-200'}`}>
+      {/* Settings icon - absolute left */}
+      <div className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50">
+        <button
+          onClick={onSettingsClick}
+          className={`p-2 hover:text-brand-red hover:scale-110 transition-all duration-300 active:scale-90 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}
+        >
+          <Settings size={20} />
+        </button>
+      </div>
 
-      <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center pr-2 sm:pr-4">
+      {/* KDK AUTO - centered */}
+      <nav className="flex justify-center items-center">
         <div className="relative group cursor-pointer" onClick={() => setActiveTab('Dashboard')}>
-          {/* Arka plan kırmızı ışık yansıması */}
           <div className="absolute inset-0 bg-brand-red/40 blur-2xl rounded-full scale-150 opacity-50 group-hover:opacity-80 transition-opacity" />
-
           <span className={`relative z-10 font-headline text-xl sm:text-3xl md:text-5xl font-black tracking-[0.15em] sm:tracking-[0.3em] md:tracking-[0.4em] uppercase italic drop-shadow-[0_0_15px_rgba(212,43,59,0.8)] ${isDark ? 'text-white' : 'text-neutral-900'}`}>
             KDK AUTO
           </span>
         </div>
       </nav>
 
-      <div className="flex items-center gap-4">
-        <button
-          onClick={onSettingsClick}
-          className={`p-2 hover:text-brand-red transition-colors active:scale-90 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}
-        >
-          <Settings size={20} />
+      {/* Social + Menu icons - absolute right */}
+      <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 flex items-center gap-3">
+        <button onClick={onShareClick} className={`hover:text-brand-red hover:scale-110 cursor-pointer transition-all duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+          <Share2 size={18} />
         </button>
+        <a href="https://www.instagram.com/auto_car_1864/" target="_blank" rel="noopener noreferrer" className={`hover:text-brand-red hover:scale-110 cursor-pointer transition-all duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+          <Instagram size={18} />
+        </a>
         <button
           onClick={onMenuClick}
           className={`p-2 hover:text-brand-red transition-colors lg:hidden active:scale-90 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}
@@ -415,8 +424,8 @@ const CarOfTheDaySection = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 sm:gap-0 mb-8 sm:mb-12">
           <div>
-            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Günlük_Seçim</h2>
-            <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Günün_Arabası</h3>
+            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Günlük Seçim</h2>
+            <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Günün Arabası</h3>
           </div>
           <div className="text-right">
             <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold">Tarih</div>
@@ -435,13 +444,13 @@ const CarOfTheDaySection = () => {
             <div className="relative group overflow-hidden h-[220px] sm:h-[300px] md:h-[400px]">
               <img src={car.oldImage} alt="Classic" referrerPolicy="no-referrer" onError={(e) => { (e.target as HTMLImageElement).src = getPlaceholderUrl(car.brand + ' ' + car.name + ' İlk Model'); }} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
               <div className="absolute top-4 left-4 bg-black/80 px-4 py-1 text-[10px] font-headline font-bold tracking-widest text-white border border-white/10">
-                İLK_MODEL
+                İLK MODEL
               </div>
             </div>
             <div className="relative group overflow-hidden h-[220px] sm:h-[300px] md:h-[400px] border-t md:border-t-0 md:border-l border-white/10">
               <img src={car.newImage} alt="Modern" referrerPolicy="no-referrer" onError={(e) => { (e.target as HTMLImageElement).src = getPlaceholderUrl(car.brand + ' ' + car.name + ' Son Model'); }} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
               <div className="absolute top-4 right-4 bg-brand-red px-4 py-1 text-[10px] font-headline font-bold tracking-widest text-white">
-                SON_MODEL
+                SON MODEL
               </div>
             </div>
           </div>
@@ -453,7 +462,7 @@ const CarOfTheDaySection = () => {
                 <p className="font-headline text-brand-red font-bold tracking-widest uppercase text-sm">{car.year}</p>
               </div>
               <div className="bg-brand-red/10 border border-brand-red/30 px-4 sm:px-8 py-3 sm:py-4">
-                <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-1">Piyasa_Değeri</div>
+                <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-1">Piyasa Değeri</div>
                 <div className="font-headline text-lg sm:text-2xl font-black text-white">{car.marketValue}</div>
               </div>
             </div>
@@ -461,7 +470,7 @@ const CarOfTheDaySection = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12 md:gap-16">
               <div className="lg:col-span-2">
                 <h5 className="font-headline text-xs tracking-widest text-neutral-500 uppercase font-bold mb-6 flex items-center gap-2">
-                  <div className="w-8 h-px bg-brand-red" /> Tarihçe_Ve_Gelişim
+                  <div className="w-8 h-px bg-brand-red" /> Tarihçe Ve Gelişim
                 </h5>
                 <p className="text-neutral-300 font-body leading-relaxed text-lg italic">"{car.story}"</p>
               </div>
@@ -504,7 +513,7 @@ const CarOfTheDaySection = () => {
 const DraftsSection = () => (
   <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern min-h-screen flex items-center">
     <div className="max-w-5xl mx-auto w-full text-center">
-      <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Tasarım_Kasası</h2>
+      <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Tasarım Kasası</h2>
       <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter mb-10 sm:mb-16">Projelerim</h3>
 
       <div className="flex flex-col items-center justify-center py-20">
@@ -516,7 +525,7 @@ const DraftsSection = () => (
         </div>
         <h4 className="font-headline text-2xl sm:text-4xl font-black uppercase tracking-tight mb-4">Pek Yakında</h4>
         <p className="font-headline text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-bold">
-          Projeler_Hazırlanıyor // Yakında_Burada
+          Projeler Hazırlanıyor // Yakında Burada
         </p>
       </div>
     </div>
@@ -567,8 +576,8 @@ const NewsSection = () => {
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 sm:gap-0 mb-8 sm:mb-12">
           <div>
-            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Sektörel_İstihbarat</h2>
-            <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Otomobil_Haberleri</h3>
+            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Sektörel İstihbarat</h2>
+            <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Otomobil Haberleri</h3>
           </div>
           <button
             onClick={fetchNews}
@@ -576,7 +585,7 @@ const NewsSection = () => {
             className="flex items-center gap-2 text-neutral-500 hover:text-brand-red transition-colors font-headline text-[10px] uppercase tracking-widest font-bold"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-            Akışı_Yenile
+            Akışı Yenile
           </button>
         </div>
 
@@ -673,6 +682,7 @@ export default function App() {
           setActiveTab={setActiveTab}
           onSettingsClick={() => setIsSettingsOpen(true)}
           onMenuClick={() => setIsMobileMenuOpen(true)}
+          onShareClick={handleShare}
         />
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -918,8 +928,8 @@ export default function App() {
                 {/* Projects Section */}
                 <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 bg-neutral-950">
                   <div className="mb-16">
-                    <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Son_Montajlar</h2>
-                    <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Mevcut_Projeler</h3>
+                    <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Son Montajlar</h2>
+                    <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Mevcut Projeler</h3>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
@@ -931,13 +941,13 @@ export default function App() {
                       image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=1920"
                     />
                     <ProjectCard
-                      title="Ünite_04: Giriş"
+                      title="Ünite 04: Giriş"
                       subtitle="Yüksek basınçlı indüksiyon sistemleri için karbon fiber akış analizi."
                       tag="İtici Güç"
                       image="https://images.unsplash.com/photo-1486497395442-885e218f2467?auto=format&fit=crop&q=80&w=800"
                     />
                     <ProjectCard
-                      title="Titan_Ocağı"
+                      title="Titan Ocağı"
                       subtitle="Dövme titanyum iç bileşenler için stres testi telemetrisi."
                       tag="Dinamikler"
                       image="https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=800"
@@ -956,7 +966,7 @@ export default function App() {
                 <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern">
                   <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-10 sm:gap-16 md:gap-20 items-center">
                     <div className="flex-1 space-y-12">
-                      <h2 className="font-headline text-3xl sm:text-5xl md:text-6xl font-black italic tracking-tighter uppercase">Teknik_İncelemeler</h2>
+                      <h2 className="font-headline text-3xl sm:text-5xl md:text-6xl font-black italic tracking-tighter uppercase">Teknik İncelemeler</h2>
 
                       <div className="space-y-10">
                         {[
@@ -986,7 +996,7 @@ export default function App() {
                           className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
                         />
                         <div className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 bg-brand-red px-3 py-1 sm:px-6 sm:py-2 text-white font-headline text-[8px] sm:text-[10px] font-bold tracking-widest">
-                          V8-YAPILANDIRMA_YÜKLENDİ
+                          V8-YAPILANDIRMA YÜKLENDİ
                         </div>
                       </div>
                     </div>
@@ -1004,7 +1014,7 @@ export default function App() {
                   ©2026 KDK AUTO 1864. TÜM ÖZELLİKLER DOĞRULANDI.
                 </div>
                 <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-brand-red font-bold">
-                  Sertifikalı Performans_Mimarı
+                  Sertifikalı Performans Mimarı
                 </div>
               </div>
 
@@ -1020,15 +1030,6 @@ export default function App() {
                 ))}
               </nav>
 
-              <div className="flex gap-6 items-center">
-                <Globe size={18} className="text-neutral-600 hover:text-brand-red cursor-pointer transition-colors" />
-                <button onClick={handleShare} className="text-neutral-600 hover:text-brand-red hover:scale-110 cursor-pointer transition-all duration-300">
-                  <Share2 size={18} />
-                </button>
-                <a href="https://www.instagram.com/auto_car_1864/" target="_blank" rel="noopener noreferrer" className="text-neutral-600 hover:text-brand-red hover:scale-110 cursor-pointer transition-all duration-300">
-                  <Instagram size={18} />
-                </a>
-              </div>
             </div>
           </footer>
         </main>
