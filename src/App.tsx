@@ -24,22 +24,226 @@ import {
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
-// Theme Context
-const ThemeContext = createContext<{ theme: 'dark' | 'light'; toggleTheme: () => void }>({
+// --- Translations ---
+type Language = 'tr' | 'en' | 'de';
+
+const translations: Record<Language, Record<string, string>> = {
+  tr: {
+    home: 'Anasayfa',
+    projects: 'Projelerim',
+    carOfTheDay: 'Günün Arabası',
+    news: 'Otomotiv Haberleri',
+    systemStart: 'Sistemi Başlat',
+    heroSubtitle: 'Mekanik hassasiyetin ham kinetik enerjiyle buluştuğu yer. Yarış dünyasının yeni dönemi için yüksek performanslı içten yanmalı sistemler ve aerodinamik şasiler tasarlıyoruz.',
+    dailySelection: 'Günlük Seçim',
+    carOfTheDayTitle: 'Günün Arabası',
+    date: 'Tarih',
+    firstModel: 'İLK MODEL',
+    latestModel: 'SON MODEL',
+    marketValue: 'Piyasa Değeri',
+    historyAndEvolution: 'Tarihçe Ve Gelişim',
+    horsepower: 'Beygir',
+    torque: 'Tork',
+    engine: 'Motor',
+    midnightLegend: 'Gece yarısı yeni efsane gelecek',
+    designVault: 'Tasarım Kasası',
+    myProjects: 'Projelerim',
+    sectorIntel: 'Sektörel İstihbarat',
+    autoNews: 'Otomobil Haberleri',
+    refreshFeed: 'Akışı Yenile',
+    latestAssemblies: 'Son Montajlar',
+    currentProjects: 'Mevcut Projeler',
+    technicalReviews: 'Teknik İncelemeler',
+    contact: 'İletişim',
+    shareProjects: 'Projelerini Benimle Paylaş',
+    shareProjectsDesc: 'Otomotiv projelerini, tasarımlarını veya fikirlerini benimle paylaş. Dosyalarını yükle, birlikte değerlendirelim.',
+    emailAddress: 'E-Posta Adresin',
+    projectSummary: 'Proje Özeti',
+    uploadFile: 'Dosya Yükle (PDF / Görsel)',
+    send: 'Gönder',
+    details: 'Detaylar',
+    navigation: 'Navigasyon',
+    close: 'Kapat',
+    systemSettings: 'Sistem Ayarları',
+    themeSettings: 'Tema Ayarı',
+    darkMode: 'Koyu Mod',
+    lightMode: 'Açık Mod',
+    languageSettings: 'Dil Seçimi',
+    closeInterface: 'Arayüzü Kapat',
+    comingSoon: 'YAKINDA...',
+    viewProject: 'Projeyi Gör',
+    preparing: 'Hazırlanıyor...',
+    certifiedArch: 'Sertifikalı Performans Mimarı',
+    guides: 'Kılavuzlar',
+    terminology: 'Terminoloji',
+    privacy: 'Gizlilik',
+    hyperCombustion: 'Hiper-Yanma',
+    hyperCombustionDesc: 'Patentli ateşleme dizilimi ile %98 termal verimlilik.',
+    kineticRecovery: 'Kinetik Geri Kazanım',
+    kineticRecoveryDesc: 'Döngü başına 400kJ geri dönüştüren rejeneratif fren sistemleri.',
+    modularChassis: 'Modüler Şasi',
+    modularChassisDesc: 'Çeşitli koşullar için değiştirilebilir süspansiyon geometrileri.',
+    v8Config: 'V8-YAPILANDIRMA YÜKLENDİ',
+    emailPlaceholder: 'ornek@email.com',
+    projectPlaceholder: 'Projeni kısaca anlat...',
+    linkCopied: 'Sitenin linki başarıyla kopyalandı!',
+    linkCopyFailed: 'Link kopyalanamadı.',
+    shareText: 'Otomotiv dünyası ve mühendislik projelerine göz at!',
+  },
+  en: {
+    home: 'Home',
+    projects: 'My Projects',
+    carOfTheDay: 'Car of the Day',
+    news: 'Auto News',
+    systemStart: 'Launch System',
+    heroSubtitle: 'Where mechanical precision meets raw kinetic energy. We design high-performance internal combustion systems and aerodynamic chassis for the new era of racing.',
+    dailySelection: 'Daily Pick',
+    carOfTheDayTitle: 'Car of the Day',
+    date: 'Date',
+    firstModel: 'FIRST MODEL',
+    latestModel: 'LATEST MODEL',
+    marketValue: 'Market Value',
+    historyAndEvolution: 'History & Evolution',
+    horsepower: 'Horsepower',
+    torque: 'Torque',
+    engine: 'Engine',
+    midnightLegend: 'New legend arrives at midnight',
+    designVault: 'Design Vault',
+    myProjects: 'My Projects',
+    sectorIntel: 'Sector Intelligence',
+    autoNews: 'Automotive News',
+    refreshFeed: 'Refresh Feed',
+    latestAssemblies: 'Latest Assemblies',
+    currentProjects: 'Current Projects',
+    technicalReviews: 'Technical Reviews',
+    contact: 'Contact',
+    shareProjects: 'Share Your Projects',
+    shareProjectsDesc: 'Share your automotive projects, designs or ideas with me. Upload your files, let\'s evaluate together.',
+    emailAddress: 'Your Email',
+    projectSummary: 'Project Summary',
+    uploadFile: 'Upload File (PDF / Image)',
+    send: 'Send',
+    details: 'Details',
+    navigation: 'Navigation',
+    close: 'Close',
+    systemSettings: 'System Settings',
+    themeSettings: 'Theme Settings',
+    darkMode: 'Dark Mode',
+    lightMode: 'Light Mode',
+    languageSettings: 'Language',
+    closeInterface: 'Close Interface',
+    comingSoon: 'COMING SOON...',
+    viewProject: 'View Project',
+    preparing: 'Preparing...',
+    certifiedArch: 'Certified Performance Architect',
+    guides: 'Guides',
+    terminology: 'Terminology',
+    privacy: 'Privacy',
+    hyperCombustion: 'Hyper-Combustion',
+    hyperCombustionDesc: '98% thermal efficiency with patented ignition sequencing.',
+    kineticRecovery: 'Kinetic Recovery',
+    kineticRecoveryDesc: 'Regenerative braking systems recycling 400kJ per cycle.',
+    modularChassis: 'Modular Chassis',
+    modularChassisDesc: 'Interchangeable suspension geometries for diverse conditions.',
+    v8Config: 'V8-CONFIG LOADED',
+    emailPlaceholder: 'example@email.com',
+    projectPlaceholder: 'Describe your project briefly...',
+    linkCopied: 'Site link copied successfully!',
+    linkCopyFailed: 'Could not copy link.',
+    shareText: 'Check out the automotive world and engineering projects!',
+  },
+  de: {
+    home: 'Startseite',
+    projects: 'Meine Projekte',
+    carOfTheDay: 'Auto des Tages',
+    news: 'Auto-Nachrichten',
+    systemStart: 'System Starten',
+    heroSubtitle: 'Wo mechanische Präzision auf kinetische Energie trifft. Wir entwickeln Hochleistungs-Verbrennungssysteme und aerodynamische Fahrgestelle für die neue Ära des Rennsports.',
+    dailySelection: 'Tagesauswahl',
+    carOfTheDayTitle: 'Auto des Tages',
+    date: 'Datum',
+    firstModel: 'ERSTES MODELL',
+    latestModel: 'NEUESTES MODELL',
+    marketValue: 'Marktwert',
+    historyAndEvolution: 'Geschichte & Entwicklung',
+    horsepower: 'Leistung',
+    torque: 'Drehmoment',
+    engine: 'Motor',
+    midnightLegend: 'Um Mitternacht kommt die neue Legende',
+    designVault: 'Design-Tresor',
+    myProjects: 'Meine Projekte',
+    sectorIntel: 'Brancheninformationen',
+    autoNews: 'Automobil-Nachrichten',
+    refreshFeed: 'Feed Aktualisieren',
+    latestAssemblies: 'Neueste Montagen',
+    currentProjects: 'Aktuelle Projekte',
+    technicalReviews: 'Technische Berichte',
+    contact: 'Kontakt',
+    shareProjects: 'Teile Deine Projekte',
+    shareProjectsDesc: 'Teile deine Automobilprojekte, Designs oder Ideen mit mir. Lade deine Dateien hoch, lass uns gemeinsam bewerten.',
+    emailAddress: 'Deine E-Mail',
+    projectSummary: 'Projektzusammenfassung',
+    uploadFile: 'Datei Hochladen (PDF / Bild)',
+    send: 'Senden',
+    details: 'Details',
+    navigation: 'Navigation',
+    close: 'Schließen',
+    systemSettings: 'Systemeinstellungen',
+    themeSettings: 'Design-Einstellung',
+    darkMode: 'Dunkler Modus',
+    lightMode: 'Heller Modus',
+    languageSettings: 'Sprache',
+    closeInterface: 'Oberfläche Schließen',
+    comingSoon: 'DEMNÄCHST...',
+    viewProject: 'Projekt Ansehen',
+    preparing: 'Wird vorbereitet...',
+    certifiedArch: 'Zertifizierter Performance-Architekt',
+    guides: 'Anleitungen',
+    terminology: 'Terminologie',
+    privacy: 'Datenschutz',
+    hyperCombustion: 'Hyper-Verbrennung',
+    hyperCombustionDesc: '98% thermischer Wirkungsgrad mit patentierter Zündsequenz.',
+    kineticRecovery: 'Kinetische Rückgewinnung',
+    kineticRecoveryDesc: 'Regeneratives Bremssystem mit 400kJ Rückgewinnung pro Zyklus.',
+    modularChassis: 'Modulares Fahrgestell',
+    modularChassisDesc: 'Austauschbare Aufhängungsgeometrien für verschiedene Bedingungen.',
+    v8Config: 'V8-KONFIGURATION GELADEN',
+    emailPlaceholder: 'beispiel@email.com',
+    projectPlaceholder: 'Beschreibe dein Projekt kurz...',
+    linkCopied: 'Website-Link erfolgreich kopiert!',
+    linkCopyFailed: 'Link konnte nicht kopiert werden.',
+    shareText: 'Entdecke die Automobilwelt und Ingenieurprojekte!',
+  },
+};
+
+// App Context (Theme + Language)
+const AppContext = createContext<{
+  theme: 'dark' | 'light';
+  toggleTheme: () => void;
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: Record<string, string>;
+}>({
   theme: 'dark',
   toggleTheme: () => { },
+  language: 'tr',
+  setLanguage: () => { },
+  t: translations.tr,
 });
+
+// Keep backward compat alias
+const ThemeContext = AppContext;
 
 // --- Components ---
 
 const Sidebar = ({ activeTab, setActiveTab, mobile, onClose }: { activeTab: string, setActiveTab: (id: string) => void, mobile?: boolean, onClose?: () => void }) => {
-  const { theme } = useContext(ThemeContext);
+  const { theme, t } = useContext(AppContext);
   const isDark = theme === 'dark';
   const menuItems = [
-    { id: 'Dashboard', label: 'Anasayfa', icon: LayoutGrid },
-    { id: 'Drafts', label: 'Projelerim', icon: PenTool },
-    { id: 'CarOfTheDay', label: 'Günün Arabası', icon: Star },
-    { id: 'News', label: 'Otomotiv Haberleri', icon: Newspaper },
+    { id: 'Dashboard', label: t.home, icon: LayoutGrid },
+    { id: 'Drafts', label: t.projects, icon: PenTool },
+    { id: 'CarOfTheDay', label: t.carOfTheDay, icon: Star },
+    { id: 'News', label: t.news, icon: Newspaper },
   ];
 
   const sidebarClasses = mobile
@@ -166,54 +370,58 @@ const Header = ({ onSettingsClick, onMenuClick, onShareClick, activeTab, setActi
   );
 };
 
-const ProjectCard = ({ title, subtitle, tag, image, size = 'small', onClick }: { title: string; subtitle: string; tag: string; image: string; size?: 'small' | 'large'; onClick?: () => void }) => (
-  <motion.div
-    whileHover={{ scale: 1.01 }}
-    onClick={onClick}
-    className={`relative group overflow-hidden bg-brand-surface rounded-none border-l-2 border-brand-red headlight-glow cursor-pointer ${size === 'large' ? 'col-span-1 md:col-span-8 h-[280px] sm:h-[350px] md:h-[450px]' : 'col-span-1 md:col-span-4 h-[280px] sm:h-[350px] md:h-[450px]'
-      }`}
-  >
-    <div className="carbon-pattern absolute inset-0 opacity-20 pointer-events-none" />
-    <img
-      src={image}
-      alt={title}
-      referrerPolicy="no-referrer"
-      onError={(e) => { (e.target as HTMLImageElement).src = getPlaceholderUrl(title); }}
-      className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700 grayscale group-hover:grayscale-0"
-    />
-    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
+const ProjectCard = ({ title, subtitle, tag, image, size = 'small', onClick }: { title: string; subtitle: string; tag: string; image: string; size?: 'small' | 'large'; onClick?: () => void }) => {
+  const { theme } = useContext(ThemeContext);
+  const isDark = theme === 'dark';
+  return (
+    <motion.div
+      whileHover={{ scale: 1.01 }}
+      onClick={onClick}
+      className={`relative group overflow-hidden rounded-none border-l-2 border-brand-red headlight-glow cursor-pointer transition-colors duration-300 ${isDark ? 'bg-brand-surface' : 'bg-white shadow-lg'} ${size === 'large' ? 'col-span-1 md:col-span-8 h-[280px] sm:h-[350px] md:h-[450px]' : 'col-span-1 md:col-span-4 h-[280px] sm:h-[350px] md:h-[450px]'
+        }`}
+    >
+      <div className="carbon-pattern absolute inset-0 opacity-20 pointer-events-none" />
+      <img
+        src={image}
+        alt={title}
+        referrerPolicy="no-referrer"
+        onError={(e) => { (e.target as HTMLImageElement).src = getPlaceholderUrl(title); }}
+        className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700 grayscale group-hover:grayscale-0"
+      />
+      <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-t from-brand-dark via-transparent to-transparent' : 'bg-gradient-to-t from-black/70 via-transparent to-transparent'}`} />
 
-    <div className="relative h-full p-4 sm:p-6 md:p-8 flex flex-col justify-between z-10">
-      <div>
-        <div className="flex justify-between items-start mb-4 md:mb-6">
-          <span className="bg-brand-red/20 text-brand-light-red font-headline text-[9px] md:text-[10px] px-3 py-1 rounded-full uppercase tracking-widest">
-            {tag}
-          </span>
-          <Bolt size={20} className="text-brand-red" />
+      <div className="relative h-full p-4 sm:p-6 md:p-8 flex flex-col justify-between z-10">
+        <div>
+          <div className="flex justify-between items-start mb-4 md:mb-6">
+            <span className="bg-brand-red/20 text-brand-light-red font-headline text-[9px] md:text-[10px] px-3 py-1 rounded-full uppercase tracking-widest">
+              {tag}
+            </span>
+            <Bolt size={20} className="text-brand-red" />
+          </div>
+          <h3 className="font-headline text-2xl md:text-3xl font-black uppercase tracking-tight mb-2 text-white drop-shadow-sm">{title}</h3>
+          <p className="text-neutral-300 font-body text-xs md:text-sm max-w-xs drop-shadow-sm">{subtitle}</p>
         </div>
-        <h3 className="font-headline text-2xl md:text-3xl font-black uppercase tracking-tight mb-2">{title}</h3>
-        <p className="text-neutral-400 font-body text-xs md:text-sm max-w-xs">{subtitle}</p>
-      </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex gap-4 md:gap-6">
-          <div>
-            <div className="font-headline text-lg md:text-xl font-bold text-brand-red">78kg</div>
-            <div className="font-headline text-[8px] md:text-[9px] uppercase text-neutral-500 tracking-widest">Net Weight</div>
+        <div className="flex items-center justify-between">
+          <div className="flex gap-4 md:gap-6">
+            <div>
+              <div className="font-headline text-lg md:text-xl font-bold text-brand-red">78kg</div>
+              <div className="font-headline text-[8px] md:text-[9px] uppercase text-neutral-400 tracking-widest">Net Weight</div>
+            </div>
+            <div className={`w-px h-8 ${isDark ? 'bg-white/10' : 'bg-white/30'}`} />
+            <div>
+              <div className="font-headline text-lg md:text-xl font-bold text-brand-red">45k</div>
+              <div className="font-headline text-[8px] md:text-[9px] uppercase text-neutral-400 tracking-widest">NM/DEG</div>
+            </div>
           </div>
-          <div className="w-px h-8 bg-white/10" />
-          <div>
-            <div className="font-headline text-lg md:text-xl font-bold text-brand-red">45k</div>
-            <div className="font-headline text-[8px] md:text-[9px] uppercase text-neutral-500 tracking-widest">NM/DEG</div>
-          </div>
+          <button className="flex items-center gap-2 text-brand-red font-headline text-[10px] md:text-xs font-bold uppercase tracking-widest hover:translate-x-2 transition-transform">
+            Detaylar <ArrowRight size={14} />
+          </button>
         </div>
-        <button className="flex items-center gap-2 text-brand-red font-headline text-[10px] md:text-xs font-bold uppercase tracking-widest hover:translate-x-2 transition-transform">
-          Detaylar <ArrowRight size={14} />
-        </button>
       </div>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 // --- Curated Car List with Real Photos ---
 const ICONIC_CARS = [
@@ -397,6 +605,8 @@ function getCarOfTheDay() {
 }
 
 const CarOfTheDaySection = () => {
+  const { theme, t } = useContext(AppContext);
+  const isDark = theme === 'dark';
   const [car, setCar] = useState(getCarOfTheDay());
   const [dateStr, setDateStr] = useState(getTodayDateString());
 
@@ -424,15 +634,15 @@ const CarOfTheDaySection = () => {
   }, [dateStr]);
 
   return (
-    <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern min-h-screen">
+    <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern min-h-screen transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 sm:gap-0 mb-8 sm:mb-12">
           <div>
-            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Günlük Seçim</h2>
-            <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Günün Arabası</h3>
+            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">{t.dailySelection}</h2>
+            <h3 className={`font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{t.carOfTheDayTitle}</h3>
           </div>
           <div className="text-right">
-            <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold">Tarih</div>
+            <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold">{t.date}</div>
             <div className="font-headline text-sm font-bold text-brand-red">{dateStr}</div>
           </div>
         </div>
@@ -441,20 +651,20 @@ const CarOfTheDaySection = () => {
           key={dateStr}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-neutral-900/50 border border-white/10 overflow-hidden headlight-glow"
+          className={`overflow-hidden headlight-glow transition-colors duration-300 ${isDark ? 'bg-neutral-900/50 border border-white/10' : 'bg-white border border-neutral-200 shadow-xl'}`}
         >
           {/* Image Comparison - First Model vs Latest Model */}
-          <div className="grid grid-cols-1 md:grid-cols-2 border-b border-white/10">
+          <div className={`grid grid-cols-1 md:grid-cols-2 transition-colors duration-300 ${isDark ? 'border-b border-white/10' : 'border-b border-neutral-200'}`}>
             <div className="relative group overflow-hidden h-[220px] sm:h-[300px] md:h-[400px]">
               <img src={car.oldImage} alt="Classic" referrerPolicy="no-referrer" onError={(e) => { (e.target as HTMLImageElement).src = getPlaceholderUrl(car.brand + ' ' + car.name + ' İlk Model'); }} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
               <div className="absolute top-4 left-4 bg-black/80 px-4 py-1 text-[10px] font-headline font-bold tracking-widest text-white border border-white/10">
-                İLK MODEL
+                {t.firstModel}
               </div>
             </div>
-            <div className="relative group overflow-hidden h-[220px] sm:h-[300px] md:h-[400px] border-t md:border-t-0 md:border-l border-white/10">
+            <div className={`relative group overflow-hidden h-[220px] sm:h-[300px] md:h-[400px] border-t md:border-t-0 md:border-l transition-colors duration-300 ${isDark ? 'border-white/10' : 'border-neutral-200'}`}>
               <img src={car.newImage} alt="Modern" referrerPolicy="no-referrer" onError={(e) => { (e.target as HTMLImageElement).src = getPlaceholderUrl(car.brand + ' ' + car.name + ' Son Model'); }} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
               <div className="absolute top-4 right-4 bg-brand-red px-4 py-1 text-[10px] font-headline font-bold tracking-widest text-white">
-                SON MODEL
+                {t.latestModel}
               </div>
             </div>
           </div>
@@ -462,46 +672,46 @@ const CarOfTheDaySection = () => {
           <div className="p-4 sm:p-8 md:p-12">
             <div className="flex flex-col md:flex-row justify-between items-start gap-4 sm:gap-8 mb-8 sm:mb-12">
               <div>
-                <h4 className="font-headline text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2">{car.brand} {car.name}</h4>
+                <h4 className={`font-headline text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2 transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.brand} {car.name}</h4>
                 <p className="font-headline text-brand-red font-bold tracking-widest uppercase text-sm">{car.year}</p>
               </div>
               <div className="bg-brand-red/10 border border-brand-red/30 px-4 sm:px-8 py-3 sm:py-4">
-                <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-1">Piyasa Değeri</div>
-                <div className="font-headline text-lg sm:text-2xl font-black text-white">{car.marketValue}</div>
+                <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>{t.marketValue}</div>
+                <div className={`font-headline text-lg sm:text-2xl font-black transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.marketValue}</div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12 md:gap-16">
               <div className="lg:col-span-2">
-                <h5 className="font-headline text-xs tracking-widest text-neutral-500 uppercase font-bold mb-6 flex items-center gap-2">
-                  <div className="w-8 h-px bg-brand-red" /> Tarihçe Ve Gelişim
+                <h5 className={`font-headline text-xs tracking-widest uppercase font-bold mb-6 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>
+                  <div className="w-8 h-px bg-brand-red" /> {t.historyAndEvolution}
                 </h5>
-                <p className="text-neutral-300 font-body leading-relaxed text-lg italic">"{car.story}"</p>
+                <p className={`font-body leading-relaxed text-lg italic transition-colors duration-300 ${isDark ? 'text-neutral-300' : 'text-gray-700'}`}>"{car.story}"</p>
               </div>
 
               <div className="space-y-8">
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">Beygir</div>
-                    <div className="font-headline text-lg sm:text-2xl font-black text-white">{car.power}</div>
+                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>{t.horsepower}</div>
+                    <div className={`font-headline text-lg sm:text-2xl font-black transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.power}</div>
                   </div>
                   <div>
-                    <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">Tork</div>
-                    <div className="font-headline text-lg sm:text-2xl font-black text-white">{car.torque}</div>
+                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>{t.torque}</div>
+                    <div className={`font-headline text-lg sm:text-2xl font-black transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.torque}</div>
                   </div>
                   <div>
-                    <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">0-100 KM/S</div>
+                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>0-100 KM/S</div>
                     <div className="font-headline text-lg sm:text-2xl font-black text-brand-red">{car.zeroToHundred}</div>
                   </div>
                   <div>
-                    <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-1">Motor</div>
-                    <div className="font-headline text-sm font-bold text-white uppercase">{car.engine}</div>
+                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>{t.engine}</div>
+                    <div className={`font-headline text-sm font-bold uppercase transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.engine}</div>
                   </div>
                 </div>
 
-                <div className="w-full py-5 bg-white/5 border border-white/10 text-center">
-                  <div className="font-headline text-[10px] font-bold uppercase tracking-widest text-neutral-500">
-                    Gece yarısı yeni efsane gelecek
+                <div className={`w-full py-5 border text-center transition-colors duration-300 ${isDark ? 'bg-white/5 border-white/10' : 'bg-neutral-50 border-neutral-200'}`}>
+                  <div className={`font-headline text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>
+                    {t.midnightLegend}
                   </div>
                 </div>
               </div>
@@ -514,12 +724,15 @@ const CarOfTheDaySection = () => {
 };
 
 
-const DraftsSection = ({ onProjectClick }: { onProjectClick: (project: { title: string; tag: string }) => void }) => (
-  <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern min-h-screen">
+const DraftsSection = ({ onProjectClick }: { onProjectClick: (project: { title: string; tag: string }) => void }) => {
+  const { theme, t } = useContext(AppContext);
+  const isDark = theme === 'dark';
+  return (
+  <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern min-h-screen transition-colors duration-300">
     <div className="max-w-5xl mx-auto w-full">
       <div className="mb-10 sm:mb-16">
-        <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Tasarım Kasası</h2>
-        <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Projelerim</h3>
+        <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">{t.designVault}</h2>
+        <h3 className={`font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{t.myProjects}</h3>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
@@ -556,10 +769,13 @@ const DraftsSection = ({ onProjectClick }: { onProjectClick: (project: { title: 
       </div>
     </div>
   </section>
-);
+  );
+};
 
 
 const NewsSection = () => {
+  const { theme, t } = useContext(AppContext);
+  const isDark = theme === 'dark';
   const [news, setNews] = useState<{ title: string; excerpt: string; date: string; category: string }[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -598,12 +814,12 @@ const NewsSection = () => {
   }, []);
 
   return (
-    <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern min-h-screen">
+    <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern min-h-screen transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 sm:gap-0 mb-8 sm:mb-12">
           <div>
-            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Sektörel İstihbarat</h2>
-            <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Otomobil Haberleri</h3>
+            <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">{t.sectorIntel}</h2>
+            <h3 className={`font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{t.autoNews}</h3>
           </div>
           <button
             onClick={fetchNews}
@@ -611,14 +827,14 @@ const NewsSection = () => {
             className="flex items-center gap-2 text-neutral-500 hover:text-brand-red transition-colors font-headline text-[10px] uppercase tracking-widest font-bold"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-            Akışı Yenile
+            {t.refreshFeed}
           </button>
         </div>
 
         {loading ? (
           <div className="space-y-8">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-32 bg-white/5 animate-pulse border-l-2 border-neutral-800" />
+              <div key={i} className={`h-32 animate-pulse border-l-2 transition-colors duration-300 ${isDark ? 'bg-white/5 border-neutral-800' : 'bg-neutral-100 border-neutral-300'}`} />
             ))}
           </div>
         ) : (
@@ -630,18 +846,18 @@ const NewsSection = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-neutral-950/50 border-l-2 border-brand-red p-4 sm:p-6 md:p-8 group hover:bg-brand-red/5 transition-all duration-300"
+                  className={`border-l-2 border-brand-red p-4 sm:p-6 md:p-8 group hover:bg-brand-red/5 transition-all duration-300 ${isDark ? 'bg-neutral-950/50' : 'bg-white shadow-sm'}`}
                 >
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-[10px] font-headline uppercase tracking-widest text-brand-red font-bold">
                       {item.category} // {item.date}
                     </span>
-                    <ArrowRight size={16} className="text-neutral-700 group-hover:text-brand-red group-hover:translate-x-2 transition-all" />
+                    <ArrowRight size={16} className={`group-hover:text-brand-red group-hover:translate-x-2 transition-all ${isDark ? 'text-neutral-700' : 'text-neutral-300'}`} />
                   </div>
-                  <h4 className="font-headline text-lg sm:text-2xl font-black uppercase tracking-tight mb-3 group-hover:text-white transition-colors">
+                  <h4 className={`font-headline text-lg sm:text-2xl font-black uppercase tracking-tight mb-3 transition-colors ${isDark ? 'group-hover:text-white' : 'text-gray-900 group-hover:text-brand-red'}`}>
                     {item.title}
                   </h4>
-                  <p className="text-neutral-400 font-body text-sm leading-relaxed max-w-3xl">
+                  <p className={`font-body text-sm leading-relaxed max-w-3xl transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>
                     {item.excerpt}
                   </p>
                 </motion.div>
@@ -667,6 +883,13 @@ export default function App() {
       return (localStorage.getItem('kdk_theme') as 'dark' | 'light') || 'dark';
     } catch { return 'dark'; }
   });
+  const [language, setLanguage] = useState<Language>(() => {
+    try {
+      return (localStorage.getItem('kdk_language') as Language) || 'tr';
+    } catch { return 'tr'; }
+  });
+
+  const t = translations[language];
 
   // Scroll to top when tab changes
   useEffect(() => {
@@ -679,6 +902,11 @@ export default function App() {
     try { localStorage.setItem('kdk_theme', newTheme); } catch { }
   };
 
+  const handleLanguageChange = (lang: Language) => {
+    setLanguage(lang);
+    try { localStorage.setItem('kdk_language', lang); } catch { }
+  };
+
   const isDark = theme === 'dark';
 
   const handleShare = async () => {
@@ -686,7 +914,7 @@ export default function App() {
       try {
         await navigator.share({
           title: 'KDK AUTO 1864',
-          text: 'Otomotiv dünyası ve mühendislik projelerine göz at!',
+          text: t.shareText,
           url: window.location.href,
         });
       } catch (err) {
@@ -695,16 +923,16 @@ export default function App() {
     } else {
       try {
         await navigator.clipboard.writeText(window.location.href);
-        alert('Sitenin linki başarıyla kopyalandı!');
+        alert(t.linkCopied);
       } catch {
-        alert('Link kopyalanamadı.');
+        alert(t.linkCopyFailed);
       }
     }
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div className={`min-h-screen transition-colors duration-500 selection:bg-brand-red selection:text-white ${isDark ? 'bg-brand-dark text-neutral-200' : 'bg-neutral-100 text-neutral-900'
+    <AppContext.Provider value={{ theme, toggleTheme, language, setLanguage: handleLanguageChange, t }}>
+      <div className={`min-h-screen transition-colors duration-500 selection:bg-brand-red selection:text-white ${isDark ? 'bg-brand-dark text-neutral-200' : 'bg-white text-neutral-900'
         }`}>
         <Header
           activeTab={activeTab}
@@ -761,7 +989,7 @@ export default function App() {
                   }`}
               >
                 <div className="flex justify-between items-center mb-8">
-                  <h3 className={`font-headline text-2xl font-black uppercase tracking-tight ${isDark ? '' : 'text-neutral-900'}`}>Sistem_Ayarları</h3>
+                  <h3 className={`font-headline text-2xl font-black uppercase tracking-tight ${isDark ? '' : 'text-neutral-900'}`}>{t.systemSettings}</h3>
                   <button onClick={() => setIsSettingsOpen(false)} className={`${isDark ? 'text-neutral-500' : 'text-neutral-400'} hover:text-brand-red transition-colors`}>
                     <RefreshCw size={20} className="rotate-45" />
                   </button>
@@ -770,12 +998,12 @@ export default function App() {
                 <div className="space-y-6">
                   {/* Tema Ayarı */}
                   <div>
-                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>Tema_Ayarı</h4>
+                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>{t.themeSettings}</h4>
                     <div className={`flex items-center justify-between p-4 border rounded ${isDark ? 'border-white/10 bg-white/5' : 'border-neutral-200 bg-neutral-50'}`}>
                       <div className="flex items-center gap-3">
                         {isDark ? <Moon size={18} className="text-brand-red" /> : <Sun size={18} className="text-amber-500" />}
                         <span className={`font-headline text-sm font-bold uppercase tracking-widest ${isDark ? 'text-white' : 'text-neutral-900'}`}>
-                          {isDark ? 'Koyu Mod' : 'Açık Mod'}
+                          {isDark ? t.darkMode : t.lightMode}
                         </span>
                       </div>
                       <button
@@ -792,11 +1020,32 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Boş Alan - Gelecekte Kullanılacak */}
+                  {/* Dil Seçimi */}
                   <div>
-                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>Diğer_Ayarlar</h4>
-                    <div className={`flex items-center justify-center p-8 border border-dashed rounded ${isDark ? 'border-white/10' : 'border-neutral-300'}`}>
-                      <span className={`font-headline text-[10px] uppercase tracking-widest font-bold ${isDark ? 'text-neutral-600' : 'text-neutral-400'}`}>Yakında_Eklenecek</span>
+                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                      {t.languageSettings} / Language / Sprache
+                    </h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { lang: 'tr' as Language, label: 'Türkçe', flag: '🇹🇷' },
+                        { lang: 'en' as Language, label: 'English', flag: '🇬🇧' },
+                        { lang: 'de' as Language, label: 'Deutsch', flag: '🇩🇪' },
+                      ].map((item) => (
+                        <button
+                          key={item.lang}
+                          onClick={() => handleLanguageChange(item.lang)}
+                          className={`flex flex-col items-center gap-2 py-4 px-3 border rounded font-headline text-xs uppercase tracking-widest font-bold transition-all duration-300 ${
+                            language === item.lang
+                              ? 'border-brand-red bg-brand-red/10 text-brand-red'
+                              : isDark
+                                ? 'border-white/10 bg-white/5 text-neutral-400 hover:border-brand-red/30 hover:text-white'
+                                : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-brand-red/30 hover:text-neutral-900'
+                          }`}
+                        >
+                          <span className="text-2xl">{item.flag}</span>
+                          <span>{item.label}</span>
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -830,7 +1079,7 @@ export default function App() {
                 className={`relative border p-8 sm:p-10 max-w-lg w-full headlight-glow ${isDark ? 'bg-neutral-900/95 border-white/10' : 'bg-white/95 border-neutral-200 shadow-2xl'}`}
               >
                 <div className="flex justify-between items-center mb-10">
-                  <h3 className={`font-headline text-2xl font-black uppercase tracking-tight ${isDark ? '' : 'text-neutral-900'}`}>Navigasyon</h3>
+                  <h3 className={`font-headline text-2xl font-black uppercase tracking-tight ${isDark ? '' : 'text-neutral-900'}`}>{t.navigation}</h3>
                   <button onClick={() => setIsNavModalOpen(false)} className={`${isDark ? 'text-neutral-500' : 'text-neutral-400'} hover:text-brand-red transition-colors`}>
                     <RefreshCw size={20} className="rotate-45" />
                   </button>
@@ -838,10 +1087,10 @@ export default function App() {
 
                 <nav className="flex flex-col gap-2">
                   {[
-                    { id: 'Dashboard', label: 'Anasayfa', icon: LayoutGrid },
-                    { id: 'Drafts', label: 'Projelerim', icon: PenTool },
-                    { id: 'CarOfTheDay', label: 'Günün Arabası', icon: Star },
-                    { id: 'News', label: 'Otomotiv Haberleri', icon: Newspaper },
+                    { id: 'Dashboard', label: t.home, icon: LayoutGrid },
+                    { id: 'Drafts', label: t.projects, icon: PenTool },
+                    { id: 'CarOfTheDay', label: t.carOfTheDay, icon: Star },
+                    { id: 'News', label: t.news, icon: Newspaper },
                   ].map((item) => (
                     <motion.button
                       key={item.id}
@@ -920,7 +1169,7 @@ export default function App() {
                 {/* Yakında... */}
                 <div className="mb-8">
                   <p className={`font-headline text-4xl sm:text-5xl font-black uppercase italic tracking-tighter ${isDark ? 'text-white/20' : 'text-neutral-200'}`}>
-                    YAKINDA...
+                    {t.comingSoon}
                   </p>
                 </div>
 
@@ -933,10 +1182,10 @@ export default function App() {
 
                 {/* Disabled Button */}
                 <button
-                  onClick={() => alert('Hazırlanıyor...')}
+                  onClick={() => alert(t.preparing)}
                   className={`w-full py-4 font-headline font-bold uppercase tracking-widest text-xs transition-all ${isDark ? 'bg-white/5 border border-white/10 text-neutral-500 hover:bg-white/10' : 'bg-neutral-100 border border-neutral-200 text-neutral-400 hover:bg-neutral-200'}`}
                 >
-                  Projeyi Gör
+                  {t.viewProject}
                 </button>
               </motion.div>
             </motion.div>
@@ -995,12 +1244,12 @@ export default function App() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, ease: "easeOut" }}
                     >
-                      <h1 className="font-headline text-3xl sm:text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter leading-none mb-4 sm:mb-6">
+                      <h1 className={`font-headline text-3xl sm:text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter leading-none mb-4 sm:mb-6 transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                         KDK AUTO <span className="text-brand-red">1864</span><br />
                         MÜHENDİSLİK
                       </h1>
-                      <p className="font-body text-sm sm:text-base md:text-xl text-neutral-400 max-w-2xl mb-6 sm:mb-12 leading-relaxed">
-                        Mekanik hassasiyetin ham kinetik enerjiyle buluştuğu yer. Yarış dünyasının yeni dönemi için yüksek performanslı içten yanmalı sistemler ve aerodinamik şasiler tasarlıyoruz.
+                      <p className={`font-body text-sm sm:text-base md:text-xl max-w-2xl mb-6 sm:mb-12 leading-relaxed transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>
+                        {t.heroSubtitle}
                       </p>
 
                       <div className="flex flex-wrap gap-6">
@@ -1008,7 +1257,7 @@ export default function App() {
                           onClick={() => setIsNavModalOpen(true)}
                           className="bg-brand-red text-white px-10 py-5 rounded-none font-headline font-bold uppercase tracking-[0.2em] hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95"
                         >
-                          Sistemi Başlat
+                          {t.systemStart}
                         </button>
                       </div>
                     </motion.div>
@@ -1016,10 +1265,10 @@ export default function App() {
                 </section>
 
                 {/* Projects Section */}
-                <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 bg-neutral-950">
+                <section className={`py-12 sm:py-24 px-4 sm:px-8 md:px-16 transition-colors duration-300 ${isDark ? 'bg-neutral-950' : 'bg-gray-50'}`}>
                   <div className="mb-16">
-                    <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">Son Montajlar</h2>
-                    <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Mevcut Projeler</h3>
+                    <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">{t.latestAssemblies}</h2>
+                    <h3 className={`font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{t.currentProjects}</h3>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
@@ -1057,24 +1306,24 @@ export default function App() {
                 </section>
 
                 {/* Technical Insights */}
-                <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern">
+                <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 carbon-pattern transition-colors duration-300">
                   <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-10 sm:gap-16 md:gap-20 items-center">
                     <div className="flex-1 space-y-12">
-                      <h2 className="font-headline text-3xl sm:text-5xl md:text-6xl font-black italic tracking-tighter uppercase">Teknik İncelemeler</h2>
+                      <h2 className={`font-headline text-3xl sm:text-5xl md:text-6xl font-black italic tracking-tighter uppercase transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{t.technicalReviews}</h2>
 
                       <div className="space-y-10">
                         {[
-                          { icon: Bolt, title: 'Hiper-Yanma', desc: 'Patentli ateşleme dizilimi ile %98 termal verimlilik.' },
-                          { icon: Gauge, title: 'Kinetik Geri Kazanım', desc: 'Döngü başına 400kJ geri dönüştüren rejeneratif fren sistemleri.' },
-                          { icon: LayoutGrid, title: 'Modüler Şasi', desc: 'Çeşitli koşullar için değiştirilebilir süspansiyon geometrileri.' }
+                          { icon: Bolt, title: t.hyperCombustion, desc: t.hyperCombustionDesc },
+                          { icon: Gauge, title: t.kineticRecovery, desc: t.kineticRecoveryDesc },
+                          { icon: LayoutGrid, title: t.modularChassis, desc: t.modularChassisDesc }
                         ].map((item, i) => (
                           <div key={i} className="flex gap-4 sm:gap-8 items-start group">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brand-red flex items-center justify-center rounded-none shrink-0 group-hover:scale-110 transition-transform">
                               <item.icon size={24} className="text-white" />
                             </div>
                             <div>
-                              <h5 className="font-headline font-bold text-xl mb-2 uppercase tracking-tight">{item.title}</h5>
-                              <p className="text-neutral-400 font-body leading-relaxed">{item.desc}</p>
+                              <h5 className={`font-headline font-bold text-xl mb-2 uppercase tracking-tight transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{item.title}</h5>
+                              <p className={`font-body leading-relaxed transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>{item.desc}</p>
                             </div>
                           </div>
                         ))}
@@ -1082,7 +1331,7 @@ export default function App() {
                     </div>
 
                     <div className="flex-1 relative">
-                      <div className="aspect-square bg-gradient-to-br from-brand-red/20 to-black p-1 border border-white/5 relative group">
+                      <div className={`aspect-square p-1 border relative group transition-colors duration-300 ${isDark ? 'bg-gradient-to-br from-brand-red/20 to-black border-white/5' : 'bg-gradient-to-br from-brand-red/10 to-neutral-100 border-neutral-200'}`}>
                         <img
                           src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=1000"
                           alt="Engine Detail"
@@ -1090,7 +1339,7 @@ export default function App() {
                           className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
                         />
                         <div className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 bg-brand-red px-3 py-1 sm:px-6 sm:py-2 text-white font-headline text-[8px] sm:text-[10px] font-bold tracking-widest">
-                          V8-YAPILANDIRMA YÜKLENDİ
+                          {t.v8Config}
                         </div>
                       </div>
                     </div>
@@ -1098,51 +1347,51 @@ export default function App() {
                 </section>
 
                 {/* Projelerini Benimle Paylaş Form */}
-                <section className="py-12 sm:py-24 px-4 sm:px-8 md:px-16 bg-neutral-950">
+                <section className={`py-12 sm:py-24 px-4 sm:px-8 md:px-16 transition-colors duration-300 ${isDark ? 'bg-neutral-950' : 'bg-gray-50'}`}>
                   <div className="max-w-3xl mx-auto">
                     <div className="mb-10 sm:mb-16">
-                      <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">İletişim</h2>
-                      <h3 className="font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter">Projelerini Benimle Paylaş</h3>
-                      <p className="text-neutral-400 font-body mt-4 text-sm sm:text-base max-w-xl">Otomotiv projelerini, tasarımlarını veya fikirlerini benimle paylaş. Dosyalarını yükle, birlikte değerlendirelim.</p>
+                      <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">{t.contact}</h2>
+                      <h3 className={`font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{t.shareProjects}</h3>
+                      <p className={`font-body mt-4 text-sm sm:text-base max-w-xl transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>{t.shareProjectsDesc}</p>
                     </div>
 
                     <form
                       action="https://app.forminit.com/f/kf0e0fhmlgd"
                       method="POST"
                       encType="multipart/form-data"
-                      className="space-y-6 border border-white/10 p-6 sm:p-10 bg-neutral-900/50 headlight-glow"
+                      className={`space-y-6 border p-6 sm:p-10 headlight-glow transition-colors duration-300 ${isDark ? 'border-white/10 bg-neutral-900/50' : 'border-neutral-200 bg-white shadow-lg'}`}
                     >
                       {/* Email */}
                       <div>
-                        <label className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-3 flex items-center gap-2">
-                          <Mail size={14} className="text-brand-red" /> E-Posta Adresin
+                        <label className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                          <Mail size={14} className="text-brand-red" /> {t.emailAddress}
                         </label>
                         <input
                           type="email"
                           name="email"
                           required
-                          placeholder="ornek@email.com"
-                          className="w-full bg-black/50 border border-white/10 px-5 py-4 text-white font-body text-sm placeholder-neutral-600 focus:border-brand-red focus:outline-none transition-colors"
+                          placeholder={t.emailPlaceholder}
+                          className={`w-full px-5 py-4 font-body text-sm focus:border-brand-red focus:outline-none transition-colors duration-300 ${isDark ? 'bg-black/50 border border-white/10 text-white placeholder-neutral-600' : 'bg-neutral-50 border border-neutral-300 text-gray-900 placeholder-neutral-400'}`}
                         />
                       </div>
 
                       {/* Message */}
                       <div>
-                        <label className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-3 flex items-center gap-2">
-                          <PenTool size={14} className="text-brand-red" /> Proje Özeti
+                        <label className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                          <PenTool size={14} className="text-brand-red" /> {t.projectSummary}
                         </label>
                         <textarea
                           name="message"
                           rows={4}
-                          placeholder="Projeni kısaca anlat..."
-                          className="w-full bg-black/50 border border-white/10 px-5 py-4 text-white font-body text-sm placeholder-neutral-600 focus:border-brand-red focus:outline-none transition-colors resize-none"
+                          placeholder={t.projectPlaceholder}
+                          className={`w-full px-5 py-4 font-body text-sm focus:border-brand-red focus:outline-none transition-colors duration-300 resize-none ${isDark ? 'bg-black/50 border border-white/10 text-white placeholder-neutral-600' : 'bg-neutral-50 border border-neutral-300 text-gray-900 placeholder-neutral-400'}`}
                         />
                       </div>
 
                       {/* File Upload */}
                       <div>
-                        <label className="font-headline text-[10px] uppercase tracking-widest text-neutral-400 font-bold mb-3 flex items-center gap-2">
-                          <Upload size={14} className="text-brand-red" /> Dosya Yükle (PDF / Görsel)
+                        <label className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                          <Upload size={14} className="text-brand-red" /> {t.uploadFile}
                         </label>
                         <div className="relative">
                           <input
@@ -1150,7 +1399,7 @@ export default function App() {
                             name="attachment"
                             multiple
                             accept=".pdf,image/*"
-                            className="w-full bg-black/50 border border-dashed border-white/10 px-5 py-8 text-neutral-400 font-body text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:bg-brand-red file:text-white file:font-headline file:text-[10px] file:uppercase file:tracking-widest file:font-bold file:cursor-pointer hover:border-brand-red/30 transition-colors"
+                            className={`w-full border border-dashed px-5 py-8 font-body text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:bg-brand-red file:text-white file:font-headline file:text-[10px] file:uppercase file:tracking-widest file:font-bold file:cursor-pointer hover:border-brand-red/30 transition-colors duration-300 ${isDark ? 'bg-black/50 border-white/10 text-neutral-400' : 'bg-neutral-50 border-neutral-300 text-neutral-500'}`}
                           />
                         </div>
                       </div>
@@ -1160,7 +1409,7 @@ export default function App() {
                         type="submit"
                         className="w-full bg-brand-red text-white py-5 font-headline font-bold uppercase tracking-[0.2em] text-xs hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(212,43,59,0.3)] active:scale-95"
                       >
-                        Gönder
+                        {t.send}
                       </button>
                     </form>
                   </div>
@@ -1173,19 +1422,19 @@ export default function App() {
           <footer className={`py-10 sm:py-16 px-4 sm:px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950 border-t border-white/5' : 'bg-white border-t border-neutral-200'}`}>
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
               <div className="space-y-2 text-center md:text-left">
-                <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-600">
-                  ©2026 KDK AUTO 1864. TÜM ÖZELLİKLER DOĞRULANDI.
+                <div className={`font-headline text-[10px] tracking-[0.2em] uppercase transition-colors duration-300 ${isDark ? 'text-neutral-600' : 'text-neutral-400'}`}>
+                  ©2026 KDK AUTO 1864.
                 </div>
                 <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-brand-red font-bold">
-                  Sertifikalı Performans Mimarı
+                  {t.certifiedArch}
                 </div>
               </div>
 
               <nav className="flex gap-4 sm:gap-6 md:gap-10">
                 {[
-                  { label: 'Kılavuzlar', id: 'Manuals' },
-                  { label: 'Terminoloji', id: 'Terminology' },
-                  { label: 'Gizlilik', id: 'Privacy' }
+                  { label: t.guides, id: 'Manuals' },
+                  { label: t.terminology, id: 'Terminology' },
+                  { label: t.privacy, id: 'Privacy' }
                 ].map(item => (
                   <a key={item.id} href="#" className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-500 hover:text-brand-red transition-colors">
                     {item.label}
@@ -1197,6 +1446,6 @@ export default function App() {
           </footer>
         </main>
       </div>
-    </ThemeContext.Provider>
+    </AppContext.Provider>
   );
 }
