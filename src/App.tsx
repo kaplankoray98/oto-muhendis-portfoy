@@ -399,19 +399,19 @@ const ProjectCard = ({ title, subtitle, tag, image, size = 'small', onClick }: {
             <Bolt size={20} className="text-brand-red" />
           </div>
           <h3 className="font-headline text-2xl md:text-3xl font-black uppercase tracking-tight mb-2 text-white drop-shadow-sm">{title}</h3>
-          <p className="text-neutral-300 font-body text-xs md:text-sm max-w-xs drop-shadow-sm">{subtitle}</p>
+          <p className="text-neutral-200 font-body text-xs md:text-sm max-w-xs drop-shadow-sm">{subtitle}</p>
         </div>
 
         <div className="flex items-center justify-between">
           <div className="flex gap-4 md:gap-6">
             <div>
               <div className="font-headline text-lg md:text-xl font-bold text-brand-red">78kg</div>
-              <div className="font-headline text-[8px] md:text-[9px] uppercase text-neutral-400 tracking-widest">Net Weight</div>
+              <div className="font-headline text-[8px] md:text-[9px] uppercase text-neutral-300 tracking-widest">Net Weight</div>
             </div>
             <div className={`w-px h-8 ${isDark ? 'bg-white/10' : 'bg-white/30'}`} />
             <div>
               <div className="font-headline text-lg md:text-xl font-bold text-brand-red">45k</div>
-              <div className="font-headline text-[8px] md:text-[9px] uppercase text-neutral-400 tracking-widest">NM/DEG</div>
+              <div className="font-headline text-[8px] md:text-[9px] uppercase text-neutral-300 tracking-widest">NM/DEG</div>
             </div>
           </div>
           <button className="flex items-center gap-2 text-brand-red font-headline text-[10px] md:text-xs font-bold uppercase tracking-widest hover:translate-x-2 transition-transform">
@@ -642,7 +642,7 @@ const CarOfTheDaySection = () => {
             <h3 className={`font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{t.carOfTheDayTitle}</h3>
           </div>
           <div className="text-right">
-            <div className="font-headline text-[10px] uppercase tracking-widest text-neutral-500 font-bold">{t.date}</div>
+            <div className={`font-headline text-[10px] uppercase tracking-widest font-bold transition-colors duration-300 ${isDark ? 'text-neutral-300' : 'text-neutral-500'}`}>{t.date}</div>
             <div className="font-headline text-sm font-bold text-brand-red">{dateStr}</div>
           </div>
         </div>
@@ -676,41 +676,41 @@ const CarOfTheDaySection = () => {
                 <p className="font-headline text-brand-red font-bold tracking-widest uppercase text-sm">{car.year}</p>
               </div>
               <div className="bg-brand-red/10 border border-brand-red/30 px-4 sm:px-8 py-3 sm:py-4">
-                <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>{t.marketValue}</div>
+                <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-300' : 'text-neutral-500'}`}>{t.marketValue}</div>
                 <div className={`font-headline text-lg sm:text-2xl font-black transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.marketValue}</div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12 md:gap-16">
               <div className="lg:col-span-2">
-                <h5 className={`font-headline text-xs tracking-widest uppercase font-bold mb-6 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>
+                <h5 className={`font-headline text-xs tracking-widest uppercase font-bold mb-6 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-300' : 'text-neutral-500'}`}>
                   <div className="w-8 h-px bg-brand-red" /> {t.historyAndEvolution}
                 </h5>
-                <p className={`font-body leading-relaxed text-lg italic transition-colors duration-300 ${isDark ? 'text-neutral-300' : 'text-gray-700'}`}>"{car.story}"</p>
+                <p className={`font-body leading-relaxed text-lg italic transition-colors duration-300 ${isDark ? 'text-neutral-200' : 'text-gray-700'}`}>"{car.story}"</p>
               </div>
 
               <div className="space-y-8">
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>{t.horsepower}</div>
+                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-300' : 'text-neutral-500'}`}>{t.horsepower}</div>
                     <div className={`font-headline text-lg sm:text-2xl font-black transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.power}</div>
                   </div>
                   <div>
-                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>{t.torque}</div>
+                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-300' : 'text-neutral-500'}`}>{t.torque}</div>
                     <div className={`font-headline text-lg sm:text-2xl font-black transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.torque}</div>
                   </div>
                   <div>
-                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>0-100 KM/S</div>
+                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-300' : 'text-neutral-500'}`}>0-100 KM/S</div>
                     <div className="font-headline text-lg sm:text-2xl font-black text-brand-red">{car.zeroToHundred}</div>
                   </div>
                   <div>
-                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>{t.engine}</div>
+                    <div className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-neutral-300' : 'text-neutral-500'}`}>{t.engine}</div>
                     <div className={`font-headline text-sm font-bold uppercase transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{car.engine}</div>
                   </div>
                 </div>
 
                 <div className={`w-full py-5 border text-center transition-colors duration-300 ${isDark ? 'bg-white/5 border-white/10' : 'bg-neutral-50 border-neutral-200'}`}>
-                  <div className={`font-headline text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-neutral-500' : 'text-neutral-500'}`}>
+                  <div className={`font-headline text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-neutral-300' : 'text-neutral-500'}`}>
                     {t.midnightLegend}
                   </div>
                 </div>
@@ -852,12 +852,12 @@ const NewsSection = () => {
                     <span className="text-[10px] font-headline uppercase tracking-widest text-brand-red font-bold">
                       {item.category} // {item.date}
                     </span>
-                    <ArrowRight size={16} className={`group-hover:text-brand-red group-hover:translate-x-2 transition-all ${isDark ? 'text-neutral-700' : 'text-neutral-300'}`} />
+                    <ArrowRight size={16} className={`group-hover:text-brand-red group-hover:translate-x-2 transition-all ${isDark ? 'text-neutral-400' : 'text-neutral-300'}`} />
                   </div>
-                  <h4 className={`font-headline text-lg sm:text-2xl font-black uppercase tracking-tight mb-3 transition-colors ${isDark ? 'group-hover:text-white' : 'text-gray-900 group-hover:text-brand-red'}`}>
+                  <h4 className={`font-headline text-lg sm:text-2xl font-black uppercase tracking-tight mb-3 transition-colors ${isDark ? 'text-white group-hover:text-white' : 'text-gray-900 group-hover:text-brand-red'}`}>
                     {item.title}
                   </h4>
-                  <p className={`font-body text-sm leading-relaxed max-w-3xl transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>
+                  <p className={`font-body text-sm leading-relaxed max-w-3xl transition-colors duration-300 ${isDark ? 'text-neutral-200' : 'text-gray-600'}`}>
                     {item.excerpt}
                   </p>
                 </motion.div>
@@ -1008,7 +1008,7 @@ export default function App() {
                 <div className="space-y-6">
                   {/* Tema Ayarı */}
                   <div>
-                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>{t.themeSettings}</h4>
+                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-200' : 'text-neutral-500'}`}>{t.themeSettings}</h4>
                     <div className={`flex items-center justify-between p-4 border rounded ${isDark ? 'border-white/10 bg-white/5' : 'border-neutral-200 bg-neutral-50'}`}>
                       <div className="flex items-center gap-3">
                         {isDark ? <Moon size={18} className="text-brand-red" /> : <Sun size={18} className="text-amber-500" />}
@@ -1032,7 +1032,7 @@ export default function App() {
 
                   {/* Dil Seçimi */}
                   <div>
-                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                    <h4 className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-4 ${isDark ? 'text-neutral-200' : 'text-neutral-500'}`}>
                       {t.languageSettings} / Language / Sprache
                     </h4>
                     <div className="grid grid-cols-3 gap-2">
@@ -1048,7 +1048,7 @@ export default function App() {
                             language === item.lang
                               ? 'border-brand-red bg-brand-red/10 text-brand-red'
                               : isDark
-                                ? 'border-white/10 bg-white/5 text-neutral-400 hover:border-brand-red/30 hover:text-white'
+                                ? 'border-white/10 bg-white/5 text-neutral-300 hover:border-brand-red/30 hover:text-white'
                                 : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-brand-red/30 hover:text-neutral-900'
                           }`}
                         >
@@ -1255,10 +1255,10 @@ export default function App() {
                       transition={{ duration: 0.8, ease: "easeOut" }}
                     >
                       <h1 className={`font-headline text-3xl sm:text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter leading-none mb-4 sm:mb-6 transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                        KDK AUTO <span className="text-brand-red">1864</span><br />
+                        KDK AUTO <span className={`${isDark ? 'text-red-500' : 'text-brand-red'}`}>1864</span><br />
                         MÜHENDİSLİK
                       </h1>
-                      <p className={`font-body text-sm sm:text-base md:text-xl max-w-2xl mb-6 sm:mb-12 leading-relaxed transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>
+                      <p className={`font-body text-sm sm:text-base md:text-xl max-w-2xl mb-6 sm:mb-12 leading-relaxed transition-colors duration-300 ${isDark ? 'text-gray-200' : 'text-gray-600'}`}>
                         {t.heroSubtitle}
                       </p>
 
@@ -1333,7 +1333,7 @@ export default function App() {
                             </div>
                             <div>
                               <h5 className={`font-headline font-bold text-xl mb-2 uppercase tracking-tight transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{item.title}</h5>
-                              <p className={`font-body leading-relaxed transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>{item.desc}</p>
+                              <p className={`font-body leading-relaxed transition-colors duration-300 ${isDark ? 'text-neutral-200' : 'text-gray-600'}`}>{item.desc}</p>
                             </div>
                           </div>
                         ))}
@@ -1362,7 +1362,7 @@ export default function App() {
                     <div className="mb-10 sm:mb-16">
                       <h2 className="font-headline text-xs tracking-[0.4em] uppercase text-brand-red mb-2">{t.contact}</h2>
                       <h3 className={`font-headline text-3xl sm:text-5xl font-black uppercase italic tracking-tighter transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'}`}>{t.shareProjects}</h3>
-                      <p className={`font-body mt-4 text-sm sm:text-base max-w-xl transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>{t.shareProjectsDesc}</p>
+                      <p className={`font-body mt-4 text-sm sm:text-base max-w-xl transition-colors duration-300 ${isDark ? 'text-neutral-200' : 'text-gray-600'}`}>{t.shareProjectsDesc}</p>
                     </div>
 
                     <form
@@ -1373,7 +1373,7 @@ export default function App() {
                     >
                       {/* Email */}
                       <div>
-                        <label className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                        <label className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-200' : 'text-neutral-500'}`}>
                           <Mail size={14} className="text-brand-red" /> {t.emailAddress}
                         </label>
                         <input
@@ -1381,26 +1381,26 @@ export default function App() {
                           name="email"
                           required
                           placeholder={t.emailPlaceholder}
-                          className={`w-full px-5 py-4 font-body text-sm focus:border-brand-red focus:outline-none transition-colors duration-300 ${isDark ? 'bg-black/50 border border-white/10 text-white placeholder-neutral-600' : 'bg-neutral-50 border border-neutral-300 text-gray-900 placeholder-neutral-400'}`}
+                          className={`w-full px-5 py-4 font-body text-sm focus:border-brand-red focus:outline-none transition-colors duration-300 ${isDark ? 'bg-black/50 border border-white/10 text-white placeholder-neutral-400' : 'bg-neutral-50 border border-neutral-300 text-gray-900 placeholder-neutral-400'}`}
                         />
                       </div>
 
                       {/* Message */}
                       <div>
-                        <label className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                        <label className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-200' : 'text-neutral-500'}`}>
                           <PenTool size={14} className="text-brand-red" /> {t.projectSummary}
                         </label>
                         <textarea
                           name="message"
                           rows={4}
                           placeholder={t.projectPlaceholder}
-                          className={`w-full px-5 py-4 font-body text-sm focus:border-brand-red focus:outline-none transition-colors duration-300 resize-none ${isDark ? 'bg-black/50 border border-white/10 text-white placeholder-neutral-600' : 'bg-neutral-50 border border-neutral-300 text-gray-900 placeholder-neutral-400'}`}
+                          className={`w-full px-5 py-4 font-body text-sm focus:border-brand-red focus:outline-none transition-colors duration-300 resize-none ${isDark ? 'bg-black/50 border border-white/10 text-white placeholder-neutral-400' : 'bg-neutral-50 border border-neutral-300 text-gray-900 placeholder-neutral-400'}`}
                         />
                       </div>
 
                       {/* File Upload */}
                       <div>
-                        <label className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                        <label className={`font-headline text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-neutral-200' : 'text-neutral-500'}`}>
                           <Upload size={14} className="text-brand-red" /> {t.uploadFile}
                         </label>
                         <div className="relative">
@@ -1409,7 +1409,7 @@ export default function App() {
                             name="attachment"
                             multiple
                             accept=".pdf,image/*"
-                            className={`w-full border border-dashed px-5 py-8 font-body text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:bg-brand-red file:text-white file:font-headline file:text-[10px] file:uppercase file:tracking-widest file:font-bold file:cursor-pointer hover:border-brand-red/30 transition-colors duration-300 ${isDark ? 'bg-black/50 border-white/10 text-neutral-400' : 'bg-neutral-50 border-neutral-300 text-neutral-500'}`}
+                            className={`w-full border border-dashed px-5 py-8 font-body text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:bg-brand-red file:text-white file:font-headline file:text-[10px] file:uppercase file:tracking-widest file:font-bold file:cursor-pointer hover:border-brand-red/30 transition-colors duration-300 ${isDark ? 'bg-black/50 border-white/10 text-neutral-200' : 'bg-neutral-50 border-neutral-300 text-neutral-500'}`}
                           />
                         </div>
                       </div>
@@ -1432,7 +1432,7 @@ export default function App() {
           <footer className={`py-10 sm:py-16 px-4 sm:px-8 transition-colors duration-500 ${isDark ? 'bg-neutral-950 border-t border-white/5' : 'bg-white border-t border-neutral-200'}`}>
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
               <div className="space-y-2 text-center md:text-left">
-                <div className={`font-headline text-[10px] tracking-[0.2em] uppercase transition-colors duration-300 ${isDark ? 'text-neutral-600' : 'text-neutral-400'}`}>
+                <div className={`font-headline text-[10px] tracking-[0.2em] uppercase transition-colors duration-300 ${isDark ? 'text-neutral-400' : 'text-neutral-400'}`}>
                   ©2026 KDK AUTO 1864.
                 </div>
                 <div className="font-headline text-[10px] tracking-[0.2em] uppercase text-brand-red font-bold">
@@ -1446,7 +1446,7 @@ export default function App() {
                   { label: t.terminology, id: 'Terminology' },
                   { label: t.privacy, id: 'Privacy' }
                 ].map(item => (
-                  <a key={item.id} href="#" className="font-headline text-[10px] tracking-[0.2em] uppercase text-neutral-500 hover:text-brand-red transition-colors">
+                  <a key={item.id} href="#" className={`font-headline text-[10px] tracking-[0.2em] uppercase hover:text-brand-red transition-colors ${isDark ? 'text-neutral-300' : 'text-neutral-500'}`}>
                     {item.label}
                   </a>
                 ))}
