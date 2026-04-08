@@ -896,9 +896,19 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeTab]);
 
+  // Apply dark class on initial load and whenever theme changes
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
+    document.documentElement.classList.toggle('dark');
     try { localStorage.setItem('kdk_theme', newTheme); } catch { }
   };
 
@@ -1054,7 +1064,7 @@ export default function App() {
                   onClick={() => setIsSettingsOpen(false)}
                   className="w-full mt-10 bg-brand-red text-white py-4 font-headline font-bold uppercase tracking-widest text-xs hover:brightness-110 transition-all"
                 >
-                  Arayüzü_Kapat
+                  {t.closeInterface}
                 </button>
               </motion.div>
             </motion.div>
@@ -1124,7 +1134,7 @@ export default function App() {
                   onClick={() => setIsNavModalOpen(false)}
                   className="w-full mt-8 bg-brand-red text-white py-4 font-headline font-bold uppercase tracking-widest text-xs hover:brightness-110 transition-all"
                 >
-                  Kapat
+                  {t.close}
                 </button>
               </motion.div>
             </motion.div>
